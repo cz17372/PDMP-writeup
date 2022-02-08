@@ -1,0 +1,15 @@
+\begin{thebibliography}{1}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Andrieu et~al.(2010)Andrieu, Doucet, and
+  Holenstein]{andrieu2010particle}
+Andrieu, C., Doucet, A., and Holenstein, R.
+\newblock Particle markov chain monte carlo methods.
+\newblock \emph{Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 72\penalty0 (3):\penalty0 269--342, 2010.
+
+\end{thebibliography}
