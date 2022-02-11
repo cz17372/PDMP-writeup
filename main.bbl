@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -11,5 +11,55 @@ Andrieu, C., Doucet, A., and Holenstein, R.
 \newblock Particle markov chain monte carlo methods.
 \newblock \emph{Journal of the Royal Statistical Society: Series B (Statistical
   Methodology)}, 72\penalty0 (3):\penalty0 269--342, 2010.
+
+\bibitem[Finke et~al.(2014)Finke, Johansen, and Span{\`o}]{finke2014static}
+Finke, A., Johansen, A.~M., and Span{\`o}, D.
+\newblock Static-parameter estimation in piecewise deterministic processes
+  using particle gibbs samplers.
+\newblock \emph{Annals of the Institute of Statistical Mathematics},
+  66\penalty0 (3):\penalty0 577--609, 2014.
+
+\bibitem[Godsill \& Vermaak(2005)Godsill and Vermaak]{godsill2005variable}
+Godsill, S. and Vermaak, J.
+\newblock Variable rate particle filters for tracking applications.
+\newblock In \emph{IEEE/SP 13th Workshop on Statistical Signal Processing,
+  2005}, pp.\  1280--1285. IEEE, 2005.
+
+\bibitem[Lindsten \& Sch{\"o}n(2012)Lindsten and Sch{\"o}n]{lindsten2012use}
+Lindsten, F. and Sch{\"o}n, T.~B.
+\newblock On the use of backward simulation in the particle gibbs sampler.
+\newblock In \emph{2012 IEEE International Conference on Acoustics, Speech and
+  Signal Processing (ICASSP)}, pp.\  3845--3848. IEEE, 2012.
+
+\bibitem[Lindsten \& Sch{\"o}n(2013)Lindsten and
+  Sch{\"o}n]{lindsten2013backward}
+Lindsten, F. and Sch{\"o}n, T.~B.
+\newblock Backward simulation methods for monte carlo statistical inference.
+\newblock \emph{Foundations and Trends{\textregistered} in Machine Learning},
+  6\penalty0 (1):\penalty0 1--143, 2013.
+
+\bibitem[Liu(2001)]{liu2001monte}
+Liu, J.~S.
+\newblock \emph{Monte Carlo strategies in scientific computing}, volume~10.
+\newblock Springer, 2001.
+
+\bibitem[Van~Dyk \& Park(2008)Van~Dyk and Park]{van2008partially}
+Van~Dyk, D.~A. and Park, T.
+\newblock Partially collapsed gibbs samplers: Theory and methods.
+\newblock \emph{Journal of the American Statistical Association}, 103\penalty0
+  (482):\penalty0 790--796, 2008.
+
+\bibitem[Whiteley(2010)]{whiteley2014backwardsampling}
+Whiteley, N.
+\newblock Discussion on particle markov chain monte carlo methods,.
+\newblock \emph{Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 72\penalty0 (3):\penalty0 269--342, 2010.
+
+\bibitem[Whiteley et~al.(2011)Whiteley, Johansen, and
+  Godsill]{whiteley2011monte}
+Whiteley, N., Johansen, A.~M., and Godsill, S.
+\newblock Monte carlo filtering of piecewise deterministic processes.
+\newblock \emph{Journal of Computational and Graphical Statistics}, 20\penalty0
+  (1):\penalty0 119--139, 2011.
 
 \end{thebibliography}

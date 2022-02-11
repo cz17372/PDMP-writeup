@@ -40,15 +40,15 @@ Piecewise Deterministic Processes (PDPs) are stochastic processes that jump rand
 
 Let $(\tau_j,\phi_j)_{j \in \mathbb{N}}$ be a stochastic process that represents the random jump times and the corresponding jump values. Moreover, all the $\tau$'s will take values such that $\tau_0 = 0$ and $\tau_0<\tau_1<\tau_2<...$. We also define $\Phi$ to be the support for all the jump values $(\phi_j)_{j \in \mathbb{N}}$. A Piecewise Deterministic Process (PDP) is a continuous time stochastic process $(\zeta_t)_{t \geq 0}$ such that $\zeta_0 := \phi_0$ and 
 $$\zeta_t := F^{\theta}(t|\tau_{v_t},\phi_{v_t})$$
-where $v_t := \sup \{j \in \mathbb{N}|\tau_j \leq t \}$ represents the latest jump time before time $t$. Hence, a piecewise deterministic process will evolve deterministically according to $F^{\theta}$ after time $\tau_{j}$ until it reaches the next jump time $\tau_{j+1}$. Here, we use $\theta$ to represent all the static parameters used in the model. Suppose that we also have a sequence of known discrete times $0=t_0<t_1<t_2<...$ and define $K_n := v_{t_n}$ to be the number of jumps before time $t_n$. It is clear that the process $\zeta_{[0,t_n]}$ can be completely determined by $\left(K_n,\tau_{1:K_n},\phi_{1:K_n},\phi_0\right)$. Moreover, we also propose Markovian prior on the jump times and jump values in the interval $[0,t_n]$, i.e.
+where $v_t := \sup \{j \in \mathbb{N}|\tau_j \leq t \}$ represents the latest jump time before time $t$. Hence, a piecewise deterministic process will evolve deterministically according to $F^{\theta}$ after time $\tau_{j}$ until it reaches the next jump time $\tau_{j+1}$. Here, we use $\theta$ to represent all the static parameters used in the model. Suppose that we also have a sequence of known discrete times $0=t_0<t_1<t_2<...$ and define $K_n := v_{t_n}$ to be the number of jumps before time $t_n$. It is clear that the process $\zeta_{[0,t_n]}$ can be completely determined by $\left(K_n,\tau_{1:K_n},\phi_{1:K_n},\phi_0\right)$ and the deterministic function \(F^{\theta}\). For simplicity, we propose a Markovian prior on the jump times and jump values in the interval $[0,t_n]$, i.e.
 \begin{equation}
 \label{eqn:Chap1-PDMP-Prior}
     p_n^{\theta}(k_n,\tau_{1:k_n},\phi_{1:k_n},\phi_0) = S^{\theta}(\tau_{k_n},t_n)q_0^{\theta}(\phi_0)\mathbbm{1}_{(0,t_n]}(\tau_{k_n})\prod_{j=1}^{n} f^{\theta}(\tau_j|\tau_{j-1}) g^{\theta}(\phi_j|\tau_j,\tau_{j-1},\phi_{j-1})
 \end{equation}
-Where $S^{\theta}(\tau_{k_n},t_n):= 1- \int_{\tau_{k_n}}^{t_n} f^{\theta}(s|\tau_{k_n})\ ds$ denotes the probability that no jump occurring in the interval $(\tau,t]$ and $f^{\theta}$, $g^{\theta}$ represents the conditional probability of the jump times and the associated jump values. The Markovian structure of the process implies that inter-jump times $\tau_n - \tau_{n-1}$ are independent with each other and the jump value $\phi_n$ at $\tau_n$ will only depend on the previous 
-jump value $\phi_{n-1}$ and the latest inter-jump time $\tau_n - \tau_{n-1}$.
+Where \(S^{\theta}(\tau_{k_n},t_n):= 1- \int_{\tau_{k_n}}^{t_n} f^{\theta}(s|\tau_{k_n})\,ds\) denotes the probability that no jump occurring in the interval $(\tau,t]$ and $f^{\theta}$, $g^{\theta}$ represents the conditional probability density of the jump times and the associated jump values. The Markovian structure of the process implies that inter-jump times $\tau_n - \tau_{n-1}$ are independent with each other and the jump value $\phi_n$ at $\tau_n$ will only depend on the previous jump value $\phi_{n-1}$ and the latest inter-jump time $\tau_n - \tau_{n-1}$.
 
 For most of the time, such a continuous time stochastic process can only be observed at discrete times with some measurement errors. Let $y_{(s,t]}$ be the observations obtained in the interval $(s,t]$ and $p^{\theta}(y_{(s,t]}|\zeta_{(s,t]})$ be the density of the observations given the PDP. We also assume that the observations obtained in disjoint intervals are conditionally independent given the PDP. Hence, we will have that 
+
 \begin{equation}
 \label{eqn:Chap1-PDMP-Likelihood}
     p^{\theta}(y_{(0,t_n]}|\zeta_{(0,t_n]}) = p^{\theta}(y_{(\tau_{k_n},t_n]}|\tau_{k_n},\phi_{k_n}) \prod_{j=1}^{k_n} p^{\theta}(y_{(\tau_{j-1},\tau_j]}|\tau_{j-1},\phi_{j-1})
@@ -59,7 +59,7 @@ The posterior density of the jump times and values up to $t_n$ will then be give
 \begin{equation}
 \label{eqn:Chap1-PDMP-Posterior}
 	\begin{split}
-		 \pi_n^{\theta}(\zeta_{(0,t_n]}) &= \pi_n^{\theta}(k_n,\tau_{1:k_n},\phi_{0:k_n}) = \gamma_{n}^{\theta}(k_n,\tau_{1:k_n},\phi_{0:k_n})/Z_n^{\theta}\\
+		 \pi_n^{\theta}(\zeta_{(0,t_n]}|y_{(0,t_n]}) &= \pi_n^{\theta}(k_n,\tau_{1:k_n},\phi_{0:k_n}|y_{(0,t_n]}) = \gamma_{n}^{\theta}(k_n,\tau_{1:k_n},\phi_{0:k_n}|y_{(0,t_n]})/Z_n^{\theta}\\
 		 &=p_n^{\theta}(k_n,\tau_{1:k_n},\phi_{1:k_n},\phi_0)  p^{\theta}(y_{(0,t_n]}|\zeta_{(0,t_n]}) / Z_n^{\theta}		
 	\end{split} 
 \end{equation}
@@ -67,9 +67,13 @@ where $Z_n^{\theta}$ is the normalising constant, which is typically unknown. We
 \begin{equation*}
     \Tilde{E}_n = \bigcup_{k=0}^{\infty} \left\{\{k\}\times T_{n,k} \times \Phi^{k+1}\right\}
 \end{equation*}
-where $T_{n,k} := \left\{(\tau_1,...,\tau_k) \in (0,\infty)^k : 0 < \tau_1 <...< \tau_k <= tn\right\}$
+where $T_{n,k} := \left\{(\tau_1,...,\tau_k) \in (0,\infty)^k : 0 < \tau_1 <...< \tau_k <= tn\right\}$. In practice, we are often interested in the Bayesian inferences based on the posterior distributions of the jumps defined in \eqref{eqn:Chap1-PDMP-Posterior} with known static model paramters \(\theta\). It is a more common problem to make Bayesian inference inferences on the static parameter \(\theta\). In this case, we assign a prior \(\pi(\theta)\) to the parameters and try to find the posterior distribution of \(\theta\)
+\[
+  \pi(\theta|y_{(0,t_n]}) = \int \pi(\theta)\pi_n^{\theta}(dk_n,d\tau_{1:k_n},d\phi_{0:k_n}|y_{(0,t_n]})  
+\]
+Since the integral involved in the above expression is in general intractable, we will often turn to employing Monte Carlo methods to perform such inferences. 
+\section{Related Literature}
 
-If all the static parameters used in the model are known, we are able to make inferences on the jump times and jump values using Sequential Monte Carlo (SMC) methods. In the following section, we will introduce the standard SMC samplers as well as the Block SMC samplers, which is a modified version of the standard SMC incorporating with block sampling methods. 
 \section{Sequential Monte Carlo Methods}
 \subsection{Standard Sequential Monte Carlo (SMC) samplers}
 Sequential Monte Carlo (SMC) methods is a class of methods that are designed to solve statistical inference problems recursively. It can be seen as a special class of Importance Sampling (IS) methods which are Monte Carlo methods that construct an approximation using samples from a proposal distribution and the corresponding importance weights. 
@@ -136,7 +140,7 @@ and normalized by $W_1^j := w_1^j / \sum_{i=1}^N w_1^i$. Approximation of $\pi_1
     \hat{\pi}_1\left(dx_1\right) := \sum_{j=1}^{N} W_1^j \delta_{X_1^j} \left(dx_1\right)
 \end{equation}
 
-At later iterations of SMC, we sample $X_{1:n}^{1:N}$ from different proposals as SIS method. Instead of using $q_{n-1}(dx_{1:n-1})q_n(dx_n|x_{1:n-1})$ as the proposal, particles are obtained from $\hat{\pi}_{n-1}(dx_{1:n-1})q_{n}(dx_n|x_{1:n-1})$. Simulation from $\hat{\pi}_{n-1}(dx_{1:n-1})q_{n}(dx_n|x_{1:n-1})$ can be broken into two steps: sampling $\Tilde{X}_{1:n-1}^j \sim \hat{\pi}_{1:n-1}$ and $X_n^j \sim q_n\left(\cdot|\Tilde{X}_{1:n-1}^j\right)$ and concatenating them to form $X_{1:n}^j$. Sampling from $\hat{\pi}_{n-1}$ is often referred as a resampling step since we are sampling from a distribution that itself is obtained from sampling. It can be seen as a random sampling from $X_{1:n-1}^{1:N}$ with replacement with weights $W_{n-1}^{1:N}$. This means that the probability of choosing the $j$-th particle is just $W_{n-1}^j$. As a result, we will have that the expected number of times being resampled for the $j$-th particle, $E\left\{\mathcal{N}_n^j\right\}$, will be given by 
+At later iterations of SMC, we sample $X_{1:n}^{1:N}$ from different proposals as SIS method. Instead of using $q_{n-1}(dx_{1:n-1})q_n(dx_n|x_{1:n-1})$ as the proposal, particles are obtained from \(\hat{\pi}_{n-1}(dx_{1:n-1})q_{n}(dx_n|x_{1:n-1})\). Simulation from $\hat{\pi}_{n-1}(dx_{1:n-1})q_{n}(dx_n|x_{1:n-1})$ can be broken into two steps: sampling $\Tilde{X}_{1:n-1}^j \sim \hat{\pi}_{1:n-1}$ and $X_n^j \sim q_n\left(\cdot|\Tilde{X}_{1:n-1}^j\right)$ and concatenating them to form $X_{1:n}^j$. Sampling from $\hat{\pi}_{n-1}$ is often referred as a resampling step since we are sampling from a distribution that itself is obtained from sampling. It can be seen as a random sampling from $X_{1:n-1}^{1:N}$ with replacement with weights $W_{n-1}^{1:N}$. This means that the probability of choosing the $j$-th particle is just $W_{n-1}^j$. As a result, we will have that the expected number of times being resampled for the $j$-th particle, $E\left\{\mathcal{N}_n^j\right\}$, will be given by 
 $$E \left(\mathcal{N}_n^j\right) = N W_n^j$$
 Since the particles are sampled from $\hat{\pi}_{n-1}(dx_{1:n-1})q_{n}(dx_n|x_{1:n-1})$, they are approximately distributed according to $\pi_{n-1}(dx_{1:n-1})q_n(dx_n|x_{1:n-1})$. As a result, the corresponding importance weight will be obtained by 
 \begin{equation}
@@ -148,7 +152,7 @@ $$B_{t|n}^i = A_{t}^{B_{t+1|n}^i}$$
 for $t = n-1,...,1$. Then each particle lineage at step $n$ can be expressed in an alternative way,
 $$X_{1:n}^i = \left(X_{1:n-1}^{A_{n-1}^i},X_n^i\right)=\left(X_1^{B_{1|n}^i},...,X_n^{B_{n|n}^i}\right)$$
 \begin{algorithm}[htb!]
-    \caption{Sequential Importance Resampling (SIR)}
+    \caption{Sequential Importance Resampling (SIR)}\label{Alg:SIR}
     \For{n=1}{
         Sample $X_{1}^j \sim q_1(dx_1)$ for $j = 1,...,N$ \;
         Compute the unnormalized weight by 
@@ -165,12 +169,11 @@ $$X_{1:n}^i = \left(X_{1:n-1}^{A_{n-1}^i},X_n^i\right)=\left(X_1^{B_{1|n}^i},...
             Calculate the unnormalized weight by 
             $$w_{n}^j :=  \frac{\gamma_n\left(x_{1:n}^j\right)}{\gamma_{n-1}\left(x_{1:n-1}^{A_{n-1}^j}\right)q_n\left(x_n^j|x_{1:n-1}^{A_{n-1}^j}\right)}$$
         }
+        Set the normalised weight by 
+        $$W_n^j := w_n^j / \sum_{i=1}^N w_{n}^i$$ \\
+        Approximate $\pi_n\left(dx_{1:n}\right)$ by 
+        $$\hat{\pi}_n(dx_{1:n}) := \sum_{j=1}^{N} W_n^j \delta_{x_{1:n}^j}(dx_{1:n})$$
     }
-    Set the normalised weight by 
-    $$W_n^j := w_n^j / \sum_{i=1}^N w_{n}^i$$
-    Approximate $\pi_n\left(dx_{1:n}\right)$ by 
-    $$\hat{\pi}_n(dx_{1:n}) := \sum_{j=1}^{N} W_n^j \delta_{x_{1:n}^j}(dx_{1:n})$$
-    \label{Alg:SIR}
 \end{algorithm}
 
 SMC method is sometimes also referred as Sequential Importance Resampling method. Since resampling will introduce extra variance to the estimation of $\pi_{n}(dx_{1:n})$ as shown by \cite{chopin2004central}, it is generally preferable to use \eqref{Standard SMC - IS target approx} to approximate $\pi_n(dx_{1:n})$ instead of using the equally weighted resampled particles. However, by inserting a resampling step, we can get rid of the particles of pretty low weights and focus our computation on regions with high probability density. 
@@ -208,10 +211,8 @@ To deal with this problem, we can instead target a density defined on an extende
 This allows us to transform between the $X$'s and $Z$'s by Equation \eqref{eqn:ZtoX}
 \begin{align}
     \label{eqn:ZtoX}
-    \begin{split}
     Z_{n,k} &:= X_{n-k+1}(k)\\
     X_n(j)  &:= Z_{n+j-1,j}
-    \end{split}
 \end{align}
 Where $Z_{n,k}$ represents the $k$th element in $Z_n$. Based on the previous discussion, the importance distribution of all these variables will be 
 \begin{equation*}
@@ -232,8 +233,8 @@ Moreover, the extended target density incorporates the actual target as a margin
 \begin{equation}
 \label{eqn:BSMC_IncrementalWeight}
     \begin{split}
-        W_n &\propto \frac{\Tilde{\gamma}^{\theta}_n(z_{1:n})}{p_n(z_{1:n})} = \frac{\Tilde{\gamma}^{\theta}_n(z_{1:n})p_{n-1}(z_{1:n-1})}{\Tilde{\gamma}^{\theta}_{n-1}(z_{1:n-1})p_n(z_{1:n})}\times \frac{\Tilde{\gamma}^{\theta}_{n-1}(z_{1:n-1})}{p_{n-1}(z_{1:n-1})}\\
-        &=W_{n-1}\times\underbrace{\frac{\gamma_n^{\theta}(x_{1:n-L}(L+1),x_{n-L+1}(L),...,x_n(1))\lambda_n(x_{n-L}(L),...,x_{n-1}(1)|x_{1:n})}{\gamma_{n-1}^{\theta}(x_{1:n-L-1}(L+1),x_{n-L}(L),...,x_{n-1}(1))K_n^{\theta}(x_{n-L}(L+1),...,x_{n}(1)|x_{1:n-1})}}_\text{$G_n^{\theta}(z_{1:n})$}
+        W_n &\propto \frac{\Tilde{\gamma}^{\theta}_n(z_{1:n})}{p_n(z_{1:n})} = \frac{\Tilde{\gamma}^{\theta}_n(z_{1:n})p_{n-1}(z_{1:n-1})}{\Tilde{\gamma}^{\theta}_{n-1}(z_{1:n-1})p_n(z_{1:n})}\times \frac{\Tilde{\gamma}^{\theta}_{n-1}(z_{1:n-1})}{p_{n-1}(z_{1:n-1})}\\\\
+        &=W_{n-1}\underbrace{\frac{\gamma_n^{\theta}(x_{1:n-L}(L+1),x_{n-L+1}(L),...,x_n(1))\lambda_n(x_{n-L}(L),...,x_{n-1}(1)|x_{1:n})}{\gamma_{n-1}^{\theta}(x_{1:n-L-1}(L+1),x_{n-L}(L),...,x_{n-1}(1))K_n^{\theta}(x_{n-L}(L+1),...,x_{n}(1)|x_{1:n-1})}}_\text{$G_n^{\theta}(z_{1:n})$}
     \end{split}
 \end{equation}
 If resampling steps are also included in this scheme, the weights at step $n$ will then be equal to the incremental weights only. Details of the Block SMC method will be listed in \textbf{Algorithm 3}.  
@@ -260,7 +261,7 @@ If resampling steps are also included in this scheme, the weights at step $n$ wi
 \end{enumerate}
 \section{SMC filter for piecewise deterministic processes}
 \subsection{Variable rate particle filter (VRPF)}
-In this section, we describe the SMC filter for PDPs. We first introduce the particle filter named \textit{variable rate particle filter} (VRPF) proposed by Godsill and Vermaak (2004). This is actually a standard SMC algorithm on PDPs with a reparameterised presentation of the PDPs.\\
+In this section, we describe the SMC filter for PDPs. We first introduce the particle filter named \textit{variable rate particle filter} (VRPF) proposed by \cite{godsill2005variable}. This is actually a standard SMC algorithm on PDPs with a reparameterised presentation of the PDPs.\\
 Let $0=t_0 < t_1 < t_2 <... $, where $t_n, n>0$, represents the $n$-th SMC step. Let $\left(\tau_{n,k},\phi_{n,k}\right)$ be the $k$-th jump time and its associated jump value in the time interval $(t_{n-1},t_n]$. Moreover, let $k_n \geq 0$ be the number of jumps in the interval $(t_{n-1},t_n]$. Then, we can define the 'states' to be 
 \begin{subequations}
 \begin{align}
@@ -357,7 +358,7 @@ To combat against this weakness, out idea is to incorporate a block sampling ste
 \end{algorithm}
     
 \subsection{Block Variable Rate Particle Filter (Block-VRPF)}
-To fight for the path degeneracy of VRPF, Block-VRPF makes modifications of the jump times and their associated jump values in the previous interval at each time. At the $n$-th SMC step, in addition to sample jump times and values in the interval $(t_{n-1},t_n]$, represented by $X_n$, jumps in the interval $(t_{n-2},t_{n-1}]$, represented by $X_{n-1}$, will also be modified. We follow \cite{Whiteley2011} to propose two types of modifications on $X_{n-1}$ - a 'birth' move and an 'adjust' move:
+To fight for the path degeneracy of VRPF, Block-VRPF makes modifications of the jump times and their associated jump values in the previous interval at each time. At the $n$-th SMC step, in addition to sample jump times and values in the interval $(t_{n-1},t_n]$, represented by $X_n$, jumps in the interval $(t_{n-2},t_{n-1}]$, represented by $X_{n-1}$, will also be modified. We follow \cite{whiteley2011monte} to propose two types of modifications on $X_{n-1}$ - a 'birth' move and an 'adjust' move:
 \begin{enumerate}
     \item If a 'birth' is proposed, a new jump time will be sampled in the interval $(\tau_{n-1,k_{n-1}}\vee t_{n-2},t_{n-1}]$ together with its jump value. Here, $a \vee b$ represents the greater of $a$ and $b$. 
     \item If an 'adjust' is proposed, the last jump time in $X_{n-1}$ and its associated jump value, $\left(\tau_{n-1,k_{n-1}},\phi_{n-1,k_{n-1}}\right)$, will be discarded and a new jump time and its jump value will be proposed in the interval $(\tau_{n-1,k_{n-1}-1} \vee t_{n-2},t_{n-1}]$. In addition, if $X_{n-1}$ contains zero jump, the 'adjust' will keep $X_{n-1}$ unchanged. 
@@ -458,7 +459,7 @@ If $M_{n-1} = 0$ and $k_{n-1} = 0$, then
 
 Here, we use that convention that if $k_n = 0$, then Equation \eqref{Iterative Jn:Case1}, \eqref{Iterative Jn:Case2} and \eqref{Iterative Jn:Case3} will be simplified to $\left(\hat{k}_{n-1}+1+k_n,\mathcal{J}_{n-1}\backslash\left\{\hat{k}_{n-1}\right\},\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$, $\Big(\hat{k}_{n-1},\mathcal{J}_{n-1}\backslash\left\{\hat{k}_{n-1},\hat{\tau}_{n-1,\hat{k}_{n-1}},\hat{\phi}_{n-1,\hat{k}_{n-1}}\right\},\allowbreak \mathring{\tau}_{n-1}^{m},\mathring{\phi}_{n-1}\Big)$ and $\mathcal{J}_{n-1}$ respectively.
 \subsubsection{Proposal Kernel}
-As for the proposed kernel, we use $K_n\left(z_n|z_{1:n-1}\right) := K_{n,1}\left(m_{n-1}|z_{1:n-1}\right)K_{n,2}\left(u_{n-1}|m_{n-1},z_{1:n-1}\right)\allowbreak \times K_{n,3}\left(x_n|z_{1:n-1},m_{n-1},u_{n-1}\right)$, in which $K_{n,1}\left(m_{n-1}|z_{1:n-1}\right) := K_{n,1}\left(m_{n-1}|\mathcal{J}_{n-1}\right)$ propose a modification type based on the PDP in the interval $(0,t_{n-1}]$. We follow the kernel proposed in Whiteley et al. (2011), i.e. $K_{n,1}\left(0|\mathcal{J}_{n-1}\right):= S\left(\hat{\tau}_{n-1,,\hat{k}_{n-1}},t_{n-1}\right)$. This is to say that the probability that an 'adjust' is proposed equals to the prior density that no jump occurs 
+As for the proposed kernel, we use $K_n\left(z_n|z_{1:n-1}\right) := K_{n,1}\left(m_{n-1}|z_{1:n-1}\right)K_{n,2}\left(u_{n-1}|m_{n-1},z_{1:n-1}\right)\allowbreak \times K_{n,3}\left(x_n|z_{1:n-1},m_{n-1},u_{n-1}\right)$, in which $K_{n,1}\left(m_{n-1}|z_{1:n-1}\right) := K_{n,1}\left(m_{n-1}|\mathcal{J}_{n-1}\right)$ propose a modification type based on the PDP in the interval $(0,t_{n-1}]$. We follow the kernel proposed in \cite{whiteley2011monte}, i.e. $K_{n,1}\left(0|\mathcal{J}_{n-1}\right):= S\left(\hat{\tau}_{n-1,,\hat{k}_{n-1}},t_{n-1}\right)$. This is to say that the probability that an 'adjust' is proposed equals to the prior density that no jump occurs 
 after the last jump in $\mathcal{J}_{n-1}$ and before the end of last epoch, $t_{n-1}$. If an 'birth' is proposed, then $U_{n-1}$ will be proposed according to 
 \begin{subequations}
 \begin{equation}
@@ -489,7 +490,7 @@ K_{n,3}\left(x_n|m_{n-1},u_{n-1},z_{1:n-1}\right):=& K_{n,3}^{1}\left(k_n|m_{n-1
 \end{split}
 \end{equation}
 
-\subsubsection{Artificial Densities}
+\subsubsection{Auxiliary Densities}
 For the density $\mu_n\left(m_{1:n-1}|\bar{x}_{1},...,\bar{x}_{n-1},x_n\right)$ in \eqref{Block-VRPF Target}, we need to make sure that the support of it should be included in the support of the proposed kernel. To make it simple, we propose a factorizable density, i.e.
 \begin{equation*}
     \mu_n\left(m_{1:n-1}|\bar{x}_{1},...,\bar{x}_{n-1},x_{n}\right) := \prod_{j=1}^{n-1} \mu_{n}^{j}\left(m_j|\bar{x}_{j}\right)
@@ -501,9 +502,9 @@ Other forms of densities are also possible as long as the densities have the cor
 
 The density for the modified jump time and jump value, $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},\bar{x}_1,..,\bar{x}_j\right)$, is also subject to our choices. Note that if $M_{j} = 1$ or $M_{j}=0$ with $k_{j}=0$, there is actually nothing to be modified. In this case, $\bar{u}_{j} := \emptyset$ and  $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},\bar{x}_1,...,\bar{x}_j\right)$ becomes degenerate and equals to $1$ in these cases. When $M_{j}=0$ and $k_{j} \geq 1$, $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},\bar{x}_1,...,\bar{x}_j\right) := \lambda_{j}\left(\hat{\tau}_{j,\hat{k}_{j}},\hat{\phi}_{j,\hat{k}_{j}}|m_{1:j},\bar{x}_1,...,\bar{x}_j\right)$ will have support 
 $$\left(\hat{\tau}_{j,\hat{k}_{j}-1} \vee t_{n-2},t_{n-1}\right] \times \Phi$$
-One easy choice is to assign $\hat{\tau}_{j,\hat{k}_{j}}$ a uniform distribution over its support. For $\hat{\phi}_{j,\hat{k}_{j}}$, we can set it to follow its prior. An optimal choice of this density will be discussed later. 
+One easy choice is to assign $\hat{\tau}_{j,\hat{k}_{j}}$ a uniform distribution over its support. For $\hat{\phi}_{j,\hat{k}_{j}}$, we can set it to follow its prior. 
 \subsubsection{Incremental Weight}
-The incremental weight, $G_n\left(z_{1:n}\right):= \hat{\gamma}_n\left(z_{1:n}\right) / \left[\hat{\gamma}_{n-1}\left(z_{1:n-1}\right)K_n\left(z_{n}|z_{1:n-1}\right)\right]$ will be calculated as follow.In this section, we set     
+The incremental weight, $G_n\left(z_{1:n}\right):= \hat{\gamma}_n\left(z_{1:n}\right) / \left[\hat{\gamma}_{n-1}\left(z_{1:n-1}\right)K_n\left(z_{n}|z_{1:n-1}\right)\right]$ will be calculated as follow. In this section, we set     
 \begin{equation*}
         \begin{split}
             h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\tau,\phi \right) := &f\left(\tau_{n,1}| \tau\right) q\left(\phi_{n,1}|\phi,\tau,\tau_{n,1}\right)\\
@@ -515,41 +516,34 @@ When $m_{n-1} = 0$, i.e. an 'adjust' is proposed,
 \begin{subequations}
 \begin{enumerate}
     \item If $k_{n-1} = 0$
-    \begin{equation}
-        \label{BlockVRPF_SMC_IncrementalWeight_Adjust_}
-        \begin{split}
-            G_n\left(z_{1:n}\right)& :=  \frac{S\left(\hat{\tau}_{n,\hat{k}_n},t_n\right)}{S\left(\hat{\tau}_{n-1,\hat{k}_{n-1}},t_{n-1}\right)} \times \frac{\mu_{n-1}(m_{n-1}|\bar{x}_{n-1})\lambda_{n-1}(\bar{u}_{n-1}|m_{1:n-1},\bar{x}_{1:n-1})}{K_{n,1}\left(0|\mathcal{J}_{n-1}\right)} \times g\left(y_{(t_{n-1},t_n]}|\mathcal{J}_{n}\right) \\
-            & \times \frac{h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\hat{\tau}_{n-1,\hat{k}_{n-1}},\hat{\phi}_{n-1,\hat{k}_{n-1}}\right)}{K_{n,3}^{1}\left(k_n|0,\emptyset,z_{1:n-1}\right) K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,0,\emptyset,z_{1:n-1}\right)}
-        \end{split}
-    \end{equation}
+    \begin{multline}
+        \label{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}
+        G_n\left(z_{1:n}\right):=  \frac{S\left(\hat{\tau}_{n,\hat{k}_n},t_n\right)}{S\left(\hat{\tau}_{n-1,\hat{k}_{n-1}},t_{n-1}\right)} \times \frac{\mu_{n-1}(m_{n-1}|\bar{x}_{n-1})\lambda_{n-1}(\bar{u}_{n-1}|m_{1:n-1},\bar{x}_{1:n-1})}{K_{n,1}\left(0|\mathcal{J}_{n-1}\right)} \\\\\times g\left(y_{(t_{n-1},t_n]}|\mathcal{J}_{n}\right)\times \frac{h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\hat{\tau}_{n-1,\hat{k}_{n-1}},\hat{\phi}_{n-1,\hat{k}_{n-1}}\right)}{K_{n,3}^{1}\left(k_n|0,\emptyset,z_{1:n-1}\right) K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,0,\emptyset,z_{1:n-1}\right)}
+    \end{multline}
     \item If $k_{n-1} \geq 1$,
-    \begin{equation}
+    \begin{multline}
         \label{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU}
-        \begin{split}
-            G_n\left(z_{1:n}\right) := & \frac{S\left(\hat{\tau}_{n,\hat{k}_n},t_n\right)}{S\left(\hat{\tau}_{n-1,\hat{k}_{n-1}},t_{n-1}\right)} \times \frac{\mu_{n-1}(m_{n-1}|\bar{x}_{n-1})}{K_{n,1}\left(0|\mathcal{J}_{n-1}\right)} \times \frac{g\left(y_{\left(\hat{\tau}_{n-1,\hat{k}_{n-1}} \wedge \mathring{\tau}_{n-1}, t_n\right]}|\mathcal{J}_n\right)}{g\left(y_{\left(\hat{\tau}_{n-1,\hat{k}_{n-1}} \wedge \mathring{\tau}_{n-1}, t_{n-1}\right]}|\mathcal{J}_{n-1}\right)}\\
-            &\times \frac{\lambda_{n-1}\left(\bar{u}_{n-1}|m_{1:n-1},\bar{x}_{1:n-1}\right)}{\mathbbm{1}\left(\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\vee t_{n-2} < \mathring{\tau}_{n-1} \leq t_{n-1}\right)\alpha_{n-1,0}\left(\mathring{\tau}_{n-1}|\mathcal{J}_{n-1}\right)\beta_{n-1,0}\left(\mathring{\phi}_{n-1}|\mathring{\tau}_{n-1},\mathcal{J}_{n-1}\right)}\\
-            &\times \frac{f\left(\mathring{\tau}_{n-1}|\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\right)q\left(\mathring{\phi}_{n-1}|\hat{\phi}_{n-1,\hat{k}_{n-1}-1},\mathring{\tau}_{n-1},\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\right)}{f\left(\hat{\tau}_{n-1,\hat{k}_{n-1}}|\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\right)q\left(\hat{\phi}_{n-1,\hat{k}_{n-1}}|\hat{\phi}_{n-1,\hat{k}_{n-1}-1},\tau_{n-1,\hat{k}_{n-1}},\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\right)}\\
-            & \times \frac{h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)}{K_{n,3}^1(k_n|0,u_{n-1},z_{1:n-1})K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,0,u_{n-1},z_{1:n-1}\right)}
-        \end{split}
-    \end{equation}
+        G_n\left(z_{1:n}\right) :=  \frac{S\left(\hat{\tau}_{n,\hat{k}_n},t_n\right)}{S\left(\hat{\tau}_{n-1,\hat{k}_{n-1}},t_{n-1}\right)} \times \frac{\mu_{n-1}(m_{n-1}|\bar{x}_{n-1})}{K_{n,1}\left(0|\mathcal{J}_{n-1}\right)} \times \frac{g\left(y_{\left(\hat{\tau}_{n-1,\hat{k}_{n-1}} \wedge \mathring{\tau}_{n-1}, t_n\right]}|\mathcal{J}_n\right)}{g\left(y_{\left(\hat{\tau}_{n-1,\hat{k}_{n-1}} \wedge \mathring{\tau}_{n-1}, t_{n-1}\right]}|\mathcal{J}_{n-1}\right)}\\\\
+        \times \frac{\lambda_{n-1}\left(\bar{u}_{n-1}|m_{1:n-1},\bar{x}_{1:n-1}\right)}{\mathbbm{1}\left(\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\vee t_{n-2} < \mathring{\tau}_{n-1} \leq t_{n-1}\right)\alpha_{n-1,0}\left(\mathring{\tau}_{n-1}|\mathcal{J}_{n-1}\right)\beta_{n-1,0}\left(\mathring{\phi}_{n-1}|\mathring{\tau}_{n-1},\mathcal{J}_{n-1}\right)}\\\\
+        \times \frac{f\left(\mathring{\tau}_{n-1}|\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\right)q\left(\mathring{\phi}_{n-1}|\hat{\phi}_{n-1,\hat{k}_{n-1}-1},\mathring{\tau}_{n-1},\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\right)}{f\left(\hat{\tau}_{n-1,\hat{k}_{n-1}}|\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\right)q\left(\hat{\phi}_{n-1,\hat{k}_{n-1}}|\hat{\phi}_{n-1,\hat{k}_{n-1}-1},\tau_{n-1,\hat{k}_{n-1}},\hat{\tau}_{n-1,\hat{k}_{n-1}-1}\right)}\\\\
+        \times \frac{h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)}{K_{n,3}^1(k_n|0,u_{n-1},z_{1:n-1})K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,0,u_{n-1},z_{1:n-1}\right)}
+    \end{multline}
 \end{enumerate}
 \end{subequations}
 
 When $m_{n-1} = 1$, i.e. a 'birth' is proposed, 
-\begin{equation}
+\begin{multline}
     \label{BlockVRPF_SMC_Incremental Weight_Birth}
-    \begin{split}
-    G_{n}\left(z_{1:n}\right) :=& \frac{S\left(\hat{\tau}_{n,\hat{k}_n},t_n\right)}{S\left(\hat{\tau}_{n-1,\hat{k}_{n-1}},t_{n-1}\right)} \times \frac{\mu_{n-1}(m_{n-1}|\bar{x}_{n-1})}{K_{n,1}\left(m_{n-1}|\mathcal{J}_{n-1}\right)}\times \frac{g\left(y_{(\mathring{\tau}_{n-1},t_n]}|\mathcal{J}_n\right)}{g\left(y_{(\mathring{\tau}_{n-1},t_{n-1}]}|\mathcal{J}_{n-1}\right)}\\\\ 
-     & \times \frac{f\left(\mathring{\tau}_{n-1}|\hat{\tau}_{n-1,\hat{k}_{n-1}}\right)q\left(\mathring{\phi}_{n-1}|\hat{\phi}_{n-1,\hat{k}_{n-1}},\mathring{\tau}_{n},\hat{\tau}_{n-1,\hat{k}_{n-1}}\right)\lambda_{n-1}(\bar{u}_{n-1}|m_{1:n-1},\bar{x}_{1:n-1})}{\mathbbm{1}\left(\hat{\tau}_{n-1,\hat{k}_{n-1}} \vee t_{n-2}  < \mathring{\tau}_{n-1} \leq t_{n-1} \right)\alpha_{n-1,1}\left(\mathring{\tau}_{n-1}|\mathcal{J}_{n-1}\right)\beta_{n-1,1}\left(\mathring{\phi}_{n-1}|\mathcal{J}_{n-1}\right)}\\\\
-     & \times \frac{h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)}{K_{n,3}^1(k_n|m_{n-1}=1,u_{n-1},z_{1:n-1})K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,m_{n-1}=1,u_{n-1},z_{1:n-1}\right)}
-     \end{split}
-\end{equation}
-In Equation \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_}, \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} and \eqref{BlockVRPF_SMC_Incremental Weight_Birth}, $h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$ and $K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,1,u_{n-1},z_{1:n-1}\right)$ will all become $1$ when $k_n=0$. We omit the explicit representation of these two situations here since they are actually the special cases of the above representations. 
+    G_{n}\left(z_{1:n}\right) := \frac{S\left(\hat{\tau}_{n,\hat{k}_n},t_n\right)}{S\left(\hat{\tau}_{n-1,\hat{k}_{n-1}},t_{n-1}\right)} \times \frac{\mu_{n-1}(m_{n-1}|\bar{x}_{n-1})}{K_{n,1}\left(m_{n-1}|\mathcal{J}_{n-1}\right)}\times \frac{g\left(y_{(\mathring{\tau}_{n-1},t_n]}|\mathcal{J}_n\right)}{g\left(y_{(\mathring{\tau}_{n-1},t_{n-1}]}|\mathcal{J}_{n-1}\right)}\\\\
+    \times \frac{f\left(\mathring{\tau}_{n-1}|\hat{\tau}_{n-1,\hat{k}_{n-1}}\right)q\left(\mathring{\phi}_{n-1}|\hat{\phi}_{n-1,\hat{k}_{n-1}},\mathring{\tau}_{n},\hat{\tau}_{n-1,\hat{k}_{n-1}}\right)\lambda_{n-1}(\bar{u}_{n-1}|m_{1:n-1},\bar{x}_{1:n-1})}{\mathbbm{1}\left(\hat{\tau}_{n-1,\hat{k}_{n-1}} \vee t_{n-2}  < \mathring{\tau}_{n-1} \leq t_{n-1} \right)\alpha_{n-1,1}\left(\mathring{\tau}_{n-1}|\mathcal{J}_{n-1}\right)\beta_{n-1,1}\left(\mathring{\phi}_{n-1}|\mathcal{J}_{n-1}\right)}\\\\
+    \times \frac{h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)}{K_{n,3}^1(k_n|m_{n-1}=1,u_{n-1},z_{1:n-1})K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,m_{n-1}=1,u_{n-1},z_{1:n-1}\right)}
+\end{multline}
+In Equation \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}, \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} and \eqref{BlockVRPF_SMC_Incremental Weight_Birth}, $h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$ and $K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,1,u_{n-1},z_{1:n-1}\right)$ will all become $1$ when $k_n=0$. We omit the explicit representation of these two situations here since they are actually the special cases of the above representations. 
 
 The BlockVRPF method is outlined in Algorithm \ref{Alg:BlockVRPF}. The sampling schemes are not specifically outlined according to each case. More specifically, $U_{n-1}^i$ in line 12 of Algorithm \ref{Alg:BlockVRPF} will become $\emptyset$ when $M_{n-1}^i = 0$ and $k_{n-1}^{A_{n-1}^i} = 0$. 
 
 \begin{algorithm}
-    \caption{Block Variable Rate Particle Filter (BlockVRPF)}
+    \caption{Block Variable Rate Particle Filter (BlockVRPF)}\label{Alg:BlockVRPF}
     \For{n=1}{
         \For{$i=1,2,...,N$}{
             Sample $X_1^{i}:=\left(k_1^i,\tau_{1,1:k_1^i}^i,\phi_{1,1:k_1^i}^i,\phi_0^i\right) \sim K_1(\cdot)$\;
@@ -570,19 +564,14 @@ The BlockVRPF method is outlined in Algorithm \ref{Alg:BlockVRPF}. The sampling 
             Sample $X_n^i := \left(k_n^i,\tau_{n,1:k_n^i}^i,\phi_{n,1:k_n^i}^i\right) \sim K_{n,3}^1 \left(\cdot | m_{n-1}^i,u_{n-1}^i,z_{1:n-1}^{A_{N-1}^i}\right)K_{n,3}^2\left(\cdot|k_n^i,m_{n-1}^i,u_{n-1}^i,z_{1:n-1}^{A_{N-1}^i}\right)$\;
             Set $Z_n^i := \left(M_{n-1}^i,U_{n-1}^i,X_{n-1}^i\right)$ and $Z_{1:n}^i := \left(Z_{1:n-1}^{A_{n-1}^i},Z_n^i\right)$\;
             Define $\mathcal{J}_n^i$ according to \eqref{Iterative Jn:Case1}, \eqref{Iterative Jn:Case2} or \eqref{Iterative Jn:Case3} based on $\mathcal{J}_{n-1}^{A_{n-1}^i}$\;
-            Calculate the incremental weight $G_n\left(z_{1:n}^i\right)$ according to \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_}, \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} or \eqref{BlockVRPF_SMC_Incremental Weight_Birth}\;
+            Calculate the incremental weight $G_n\left(z_{1:n}^i\right)$ according to \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}, \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} or \eqref{BlockVRPF_SMC_Incremental Weight_Birth}\;
         }
         \For {$n=1,...,N$}{
             Calculate the normalised weight $W_n^i$ such that 
             $$W_n^i \propto G_n(Z_{1:n}^i),\quad \sum_{i=1}^{N} W_n^i = 1$$
         }
     }
-    \label{Alg:BlockVRPF}
 \end{algorithm}
-    
-\subsection{Some Ideas about the BlockVRPF method}
-In this previous section, we define $Z_n:=(U_{n-1},M_{n-1},X_n)$ for $n>1$ and derive an SMC algorithm treating the $Z_n$ as the state for the n-th SMC step. One potential drawback of this formulation is that the modification $(M_{n-1},U_{n-1})$ in $Z_n$ may come with bad proposal jump times and values in the interval $(t_{n-1},t_n]$, which is denoted by $X_n$. In this case, the way we calculate the incremental weights will also assign $(M_{n-1},U_{n-1})$ with a small weight, even when they are in fact strong modifications. One possible way to alleviate this problem is to separate $Z_n$ into two individual steps. More specifically, we can consider an SMC algorithm that alternatively perform the generation of jump times and values in the new time interval and the modification of jump times and values in the previous blocks. Hence, we can define $Z_1:=X_1, Z_2:=X_2,Z_3:=(M_1,U_1),Z_4 := X_3$, etc. 
-
 
 \section{Static Parameter Estimations using Particle Gibbs}
 In the previous section, we proposed a novel method that combines block sampling and VRPF to perform filtering on the piecewise deterministic Markov models, given the values of the static parameters in the model is known. In this section, we are trying to make inferences on these static parameters in the piecewise deterministic processes. 
@@ -612,7 +601,7 @@ where the expectation is taken with respect to all the random variables generate
 \begin{equation}
     \label{JointDensity-of-SMC}
     \begin{split}
-        \psi_P^{N,\theta}(\textbf{x}_1,...,\textbf{x}_P,\textbf{a}_1,...,\textbf{a}_{P-1}) & := \left\{\prod_{j=1}^{N}K_1\left(x_1^j\right)\right\}\prod_{n=2}^{P}\left\{r^{\theta}\left(\textbf{a}_{n-1}|\textbf{W}_{n-1}\right)\prod_{j=1}^{N}K_n\left(x_n^j|x_{1:n-1}^{a_{n-1}^j}\right)\right\}
+        \psi_P^{N,\theta}(\textbf{x}_1,...,\textbf{x}_P,\textbf{a}_1,...,\textbf{a}_{P-1}) & := \left\{\prod_{j=1}^{N}K_1^{\theta}\left(x_1^j\right)\right\}\prod_{n=2}^{P}\left\{r^{\theta}\left(\textbf{a}_{n-1}|\textbf{W}_{n-1}\right)\prod_{j=1}^{N}K_n^{\theta}\left(x_n^j|x_{1:n-1}^{a_{n-1}^j}\right)\right\}
     \end{split}
 \end{equation}
 Such an SMC sampler will produce $N$ distinct paths, i.e. $X_{1:P}^1, X_{1:P}^2,...,X_{1:P}^N$. For a specific path, $X_{1:P}^k$, we can denote it as 
@@ -625,33 +614,37 @@ with $B_P^k = k$ and $B_n^k = A_{n}^{B_{n+1}^k}$. To sample a single path from t
 The first condition needs to be fullfilled to ensure that we are still able to target the correct distribution as a marginal. We try to achieve the second condition in order to make sure that the MH update targeting this extended distribution is as efficient as possible. Inspired by this, we should consider factorising the extended target density in the form
 \begin{equation}
     \label{PMCMC-Form of extended target}
-    \tilde{\pi}_P(k,\theta,\mathbf{x}_{1:P},\mathbf{a}_{1:P-1}) = \frac{\pi_{P}(\theta,x_{1:P}^{b_{1:P}^k},b_{1:P}^k)}{N^P}\psi_P^{N,\theta}(\mathbf{x}_{1:P}^{-k},\mathbf{a}_{1:P-1}^{-k}||\theta,x_{1:P}^{b_{1:P}},b_{1:P})
+    \tilde{\pi}_P(\theta,b_{1:P},\mathbf{x}_{1:P},\mathbf{a}_{1:P-1}) = \frac{\pi_{P}(\theta,x_{1:P}^{b_{1:P}},b_{1:P})}{N^P}\psi_P^{N,\theta}(\mathbf{x}_{1:P}^{-b_{1:P}},\mathbf{a}_{1:P-1}^{-b_{2:P}}|\theta,x_{1:P}^{b_{1:P}},b_{1:P})
 \end{equation}  
-where we define $\mathbf{x}_{1:P}^{-k} := \mathbf{x}_{1:P}\backslash x_{1:P}^{b_{1:P}^k}$ and similarly $\mathbf{a}_{1:P-1}^{-k} := \mathbf{a}_{1:P-1} \backslash a_{1:P-1}^{b_{2:P}^k}$. The first part of \eqref{PMCMC-Form of extended target} is included to meet the first condition. Practically, one could simply sample an lineage index $k$ with probability $W_P^k$ and set $b_P:=k$ and this would implicitly define the values of $b_{P-1},...,b_1$ through the relationship $b_n = a_n^{b_{n+1}}$. If the support of the proposal distributions used in the SMC algorithm, $K_1(dx_1)\prod_{j=2}^{P}K_j(dx_j|x_{1:j-1})$, encompasses that of $\pi_P$, the marginal density $\pi_P(\theta,x_{1:P}^{b_{1:P}^k},b_{1:P}^k)/N^P$ would be the same as $\pi_P$, which is the actual density of our interest. 
+where we define $\mathbf{x}_{1:P}^{-b_{1:P}} := \mathbf{x}_{1:P}\backslash x_{1:P}^{b_{1:P}}$ and similarly $\mathbf{a}_{1:P-1}^{-b_{2:P}} := \mathbf{a}_{1:P-1} \backslash a_{1:P-1}^{b_{2:P}}$. The first part of \eqref{PMCMC-Form of extended target} is included to meet the first condition. Practically, one could simply sample an lineage index $k$ with probability $W_P^k$ and set $b_P:=k$ and this would implicitly define the values of $b_{P-1},...,b_1$ through the relationship $b_n = a_n^{b_{n+1}}$. If the support of the proposal distributions used in the SMC algorithm, $K_1(dx_1)\prod_{j=2}^{P}K_j(dx_j|x_{1:j-1})$, encompasses that of $\pi_P$, the marginal density $\pi_P(\theta,x_{1:P}^{b_{1:P}},b_{1:P})/N^P$ would be the same as $\pi_P$, which is the actual density of our interest. 
 
 The second part of \eqref{PMCMC-Form of extended target} is designed to meet the second requirement. As we need to define the distribution of the rest particles and ancestor indices and hope to design a distribution that are close to $\psi_P^{N,\theta}$. One way to do this is to define a conditional distribution of the rest particles and ancestor indices. Hence, we can define the joint distribution of $\textbf{X}_{1:P}^{-k}$ and $\textbf{A}_{1:P-1}^{-k}$ to be
 \begin{equation}
     \label{Conditional SMC} 
     \begin{split}
-        \psi_P^{N,\theta}\left(\textbf{x}_{1:P}^{-k},\textbf{a}_{1:P-1}^{-k}|x_{1:P}^k,b_{1:P}^k\right) &:= \frac{\psi_P^N(\textbf{x}_1,...,\textbf{x}_P,\textbf{a}_1,...,\textbf{a}_{P-1})}{K_1\left(x_1^{b_1^k}\right)\prod_{n=2}^P \left\{r\left(b_{n-1}^k|\textbf{W}_{n-1}\right)K_n\left(x_n^{b_n^k}|x_{1:n-1}^{b_{1:n-1}^k}\right)\right\}}\\
-        & = \left\{\prod_{1\leq j \leq N,j \neq b_1^k} K_1\left(x_1^j\right)\right\}\prod_{n=2}^P r\left(\textbf{a}_{n-1}^{-b_{n}^k}|\textbf{W}_{n-1},a_{n-1}^{b_n^k}\right) \\
-        & \times \prod_{1 \leq j \leq N, j \neq b_n^k} K\left(x_n^j|x_{1:n-1}^{a_{n-1}^j}\right)
+        \psi_P^{N,\theta}\left(\mathbf{x}_{1:P}^{-b_{1:P}},\mathbf{a}_{1:P-1}^{-b_{2:P}}|x_{1:P}^{b_{1:P}},b_{1:P}\right) &:= \frac{\psi_P^{N,\theta}(\mathbf{x}_{1:P},\mathbf{a}_{1:P})}{K_1\left(x_1^{b_1}\right)\prod_{n=2}^P \left\{r\left(b_{n-1}|\mathbf{W}_{n-1}\right)K_n\left(x_n^{b_n}|x_{1:n-1}^{b_{1:n-1}}\right)\right\}}\\
+        &= \left\{\prod_{1\leq j \leq N,j \neq b_1} K_1\left(x_1^j\right)\right\}\prod_{n=2}^P r\left(\mathbf{a}_{n-1}^{-b_{n}}|\mathbf{W}_{n-1},a_{n-1}^{b_n}\right) \\
+        &\quad\quad\quad\quad \times \prod_{1 \leq j \leq N, j \neq b_n} K\left(x_n^j|x_{1:n-1}^{a_{n-1}^j}\right)
     \end{split}
 \end{equation} 
 
 
-Since Equation \eqref{Conditional SMC} is the conditional distribution of $\left(\textbf{X}_{1:P}^{-k},\textbf{A}_{1:P-1}^{-k}\right)$ given the path $\left(k,X_{1:P}^k,B_{1:P}^k\right)$ in $\bar{\pi}_P^N$. This gives actaully inspires the idea of partible Gibbs sampler described in Andrieu et al. (2010). Therefore, at each iteration, given we have obtained $\left(\theta,k,b_{1:P}^k,x_{1:P}^k,\textbf{x}_{1:P}^{-k},\textbf{a}_{1:P-1}^{-k}\right)$, we can do the following to obtain a new set of random variables
+Since Equation \eqref{Conditional SMC} is the conditional distribution of \(\left(\textbf{X}_{1:P}^{-b_{1:P}},\textbf{A}_{1:P-1}^{-b_{2:P}}\right)\) given the path \(\left(x_{1:P}^{b_{1:P}},b_{1:P}\right)\) in \(\tilde{\pi}_P^N\). This gives actaully inspires the idea of partible Gibbs sampler described in \cite{andrieu2010particle}. At each iteration, given we have obtained \(\left(\theta,b_{1:P},x_{1:P}^{b_{1:P}},\textbf{x}_{1:P}^{-b_{1:P}},\textbf{a}_{1:P-1}^{-b_{2:P}}\right)\), we can do the following to obtain a new set of random variables
 
-\begin{enumerate}
-    \item Sample $\theta^{*} \sim \bar{\pi}_P^N\left(\cdot|b_{1:P}^k,x_{1:P}^k,\textbf{x}_{1:P}^{-k},\textbf{a}_{1:P-1}^{-k}\right)$ 
-    \item Sample $\textbf{X}_{1:P}^{*,-k},\textbf{A}_{1:P-1}^{*,-k} \sim \bar{\pi}_P^N\left(\cdot|\theta^{*},b_{1:P}^k,x_{1:P}^k\right)=\psi_P^{N}\left(\textbf{x}_{1:P}^{-k},\textbf{a}_{1:P-1}^{-k}||x_{1:P}^k,b_{1:P}^k\right)$
-    \item Sample $k^{*},b_{1:P}^{k,*},x_{1:P}^{k^{*}} \sim \bar{\pi}_P^N\left(\cdot|\theta^{*},\textbf{X}_{1:P}^{*,-k},\textbf{A}_{1:P-1}^{*,-k},b_{1:P}^k,x_{1:P}^k\right)$
+\begin{enumerate}[label=\textit{Step \arabic*.},leftmargin=*]
+    \item Sample $\theta^{*} \sim \tilde{\pi}_P^N\left(\theta|b_{1:P},x_{1:P}^{b_{1:P}},\textbf{x}_{1:P}^{-b_{1:P}},\textbf{a}_{1:P-1}^{-b_{2:P}}\right)$ 
+    \item Sample $\textbf{X}_{1:P}^{*,-b_{1:P}},\textbf{A}_{1:P-1}^{*,-b_{2:P}} \sim \psi_P^{N,\theta^{*}}\left(\textbf{x}_{1:P}^{*,-b_{1:P}},\textbf{a}_{1:P-1}^{*,-b_{2:P}}|b_{1:P},x_{1:P}^{b_{1:P}}\right)$
+    \item Sample $b_{1:P}^{*},x_{1:P}^{b_{1:P}^{*}} \sim \tilde{\pi}_P^N\left(b_{1:P}^{*},x_{1:P}^{b_{1:P}^{*}}|\theta^{*},\textbf{x}_{1:P}^{*,-b_{1:P}},\textbf{a}_{1:P-1}^{*,-b_{2:P}},b_{1:P},x_{1:P}^{b_{1:P}}\right)$
 \end{enumerate}
 
-As described in Liu(2001), step 1 can be simplified to sample $\theta^{*} \sim \pi_P(\cdot|x_{1:P}^k)$ and this still leaves the target density $\bar{\pi}_P^N$ invariant. This is a special Gibbs sampler known as 'collapsed' Gibbs sampler. For step 2, we need a special type of SMC sampler, named Conditional SMC (cSMC). This was first described in \cite{andrieu2010particle} and the main idea of cSMC is to run a standard SMC sampler, while the sampled path $\left(X_{1:P}^k,B_{1:P}^k\right)$ is kept unchanged. Algorithm \ref{Alg:CSMC} gives the details of the conditional SMC sampler. 
+As described in \cite{andrieu2010particle}, \textit{Step 1} of the above sampling scheme can be simplified to sampling $\theta^{*} \sim \pi_P(\theta^{*}|x_{1:P}^{b_{1:P}})$ and this still leaves the target density $\tilde{\pi}_P^N$ invariant. This is a special type of Gibbs sampler known as 'collapsed' Gibbs sampler which was discussed in \cite{liu2001monte} and \cite{van2008partially}. For complex models, directly sampling from \(\pi_P(\theta^{*}|x_{1:P}^{b_{1:P}})\) may not be possible either. In this case, one can insert a Metropolis-Hastings update to \textit{Step 1}. Given a transition kernel \(q(\,d\theta'|\theta)\), one can sample a candidate \(\theta'\) and set \(\theta^{*} := \theta'\) with probability 
+\[
+    \alpha(\theta,\theta') := 1 \wedge  \frac{\pi_P(\theta'|x_{1:P}^{b_{1:P}})q(\theta|\theta')}{\pi_P(\theta|x_{1:P}^{b_{1:P}})q(\theta'|\theta)} 
+\]
+Such a technique is termed as \textit{Metropolis-Hastings within Partially Collapsed Gibbs} (MHwPCG) and its correctness was described in \cite{van2008partially}. \textit{Step 2} of the scheme involves sampling from the conditional distribution defined by \(\psi_{P}^{N,\theta^{*}}\left(\mathbf{x}_{1:P}^{-b_{1:P}},\mathbf{a}_{1:P-1}^{-b_{2:P}}|x_{1:P}^{b_{1:P}},b_{1:P}\right)\). One can see that this conditional distribution only depends on the transition kernels $K_{1:P}$ and the resampling scheme $r$ used in the SMC algorithm. Hence, to sample from the conditional, one can employ an algorithm similar to the standard SMC algorithm, except for keeping a particular particle trajectory \(x_{1:P}^{b_{1:P}}\) fixed. Such an SMC sampler is termed as conditional SMC (cSMC) sampler and was first introduced in \cite{andrieu2010particle}. The details of the sampler is listed in Algorithm \ref{Alg:CSMC}.
 
 \begin{algorithm}[htb!]
-    \caption{Conditional SMC Sampler (CSMC)}\label{Alg:CSMC}
+    \caption{Conditional SMC Sampler (cSMC)}\label{Alg:CSMC}
     Given a path $\left(X_{1:P}^{*},B_{1:P}\right)$\;
     \For{n=1}{
         \For {$j=1,2,3,...,N$}{
@@ -679,7 +672,36 @@ As described in Liu(2001), step 1 can be simplified to sample $\theta^{*} \sim \
     }
     
 \end{algorithm}
-In step 3, a new path is chosen from the $N$ distinct paths generated from the cSMC sampler. Since each path is associated with a normalised weight $W_P^k$, we therefore chose the $k$-th path at step 3 with probability $W_P^k$. Algorithm \ref{Alg: PG} gives a detailed outline of a particle Gibbs sampler. 
+
+Note that one could permute the indices of the particles in an SMC sampler while keeping the SMC sampler invariant. Hence, one could practically fix \(b_{1:P}\) to some convenient values (e.g \(b_i=1, i=1,2,..,P\)) to simplify the implementation of the cSMC sampler. 
+
+\textit{Step 3} samples the ancestor indices \(b_{1:P}\)and the corresponding trajectory defined by the indices \(x_{1:P}^{b_{1:P}}\). Following \cite[Chapter~5]{lindsten2013backward}, the marginal is given by $\pi_P(\theta,x_{1:p}) \propto \pi(\theta)\pi^{\theta}_P(x_{1:P})$ and we can rewrite $\pi^{\theta}_P(x_{1:P})$ as 
+\[
+    \pi_{P}^{\theta}(x_{1:P}):= \pi_1^{\theta}(x_1) \prod_{n=2}^{P}\frac{\pi_n^{\theta}(x_{1:n})}{\pi_{n-1}^{\theta}(x_{1:n-1})} 
+\]
+Moreover, in an SMC sampler, the unnormalised weight \(w_n\) is given by 
+\[
+  w_n := \frac{\pi_n^{\theta}(x_{1:n})}{\pi_{n-1}^{\theta}(x_{1:n-1})K_n^{\theta}(x_n|x_{1:n-1})} 
+\]
+Hence, we have that 
+\[
+  \pi_P^{\theta}(x_{1:P}) := w_1K_1(x_1)\prod_{n=2}^{P} w_n K_n^{\theta}(x_n|x_{1:n-1})
+\]
+Hence, if we plugin \(x_{1:P}^{b_{1:P}}\), we would obtain 
+\begin{equation}
+    \label{PMCMC-another way of writing piP}
+    \begin{split}
+        \pi_P^{\theta}(x_{1:P}^{b_{1:P}}) &:= w_1^{b_1} K_1(x_1^{b_1})\prod_{n=2}^{P} w_n^{b_n} K_n^{\theta}(x_n^{b_n}|x_{1:n-1}^{b_{1:n-1}})\\
+        &=\left\{\frac{w_1^{b_1}}{\sum_{i=1}^N w_1^i}K_1(x_1^{b_1})\prod_{n=2}^{P} \frac{w_n^{b_n}}{\sum_{i=1}^N w_n^i} K_n^{\theta}(x_n^{b_n}|x_{1:n-1}^{b_{1:n-1}})\right\}\left\{\prod_{n=1}^{P}\sum_{i=1}^N w_n^i\right\} \\
+        &= W_P^{b_P}\left\{K_1(x_1^{b_1}) \prod_{n=2}^{P}W_{n-1}^{b_{n-1}}K_n(x_n^{b_n}|x_{1:n-1}^{b_{1:n-1}})\right\}\left\{\prod_{n=1}^{P}\sum_{i=1}^N w_n^i\right\} \\
+        &=W_P^{b_P}\left\{K_1(x_1^{b_1}) \prod_{n=2}^{P}r(b_{n-1}|\mathbf{W}_{n-1})K_n(x_n^{b_n}|x_{1:n-1}^{b_{1:n-1}})\right\}\left\{\prod_{n=1}^{P}\sum_{i=1}^N w_n^i\right\}
+    \end{split}
+\end{equation}
+If we substitute this into \eqref{PMCMC-Form of extended target}, we will obtain, after simplification 
+\[
+    \tilde{\pi}_P(\theta,b_{1:P},\mathbf{x}_{1:P},\mathbf{a}_{1:P-1}) = \frac{\pi(\theta)W_P^{b_P}}{N^P}\psi_P^{N,\theta}(\mathbf{x}_{1:P},\mathbf{a}_{1:P-1})\left\{\prod_{n=1}^{P}\sum_{i=1}^N w_n^i\right\}  \propto W_P^{b_P}
+\]
+Hence, we can see that to perform \textit{Step 3}, one simply choose \(b_P = k\) with probability \(W_P^k\) and set \(b_{n} := a_{n}^{b_{n+1}}\) for \(n=P-1,P-2,...,2,1\). The corresponding trajectory will then be obtained deterministically. These three steps completes one sweep of the particle Gibbs sampler and its full implementation is listed in Algorithm \ref{Alg: PG}.
 \begin{algorithm}[htb!]
     \caption{particle Gibbs sampler}\label{Alg: PG}
         Initialise at any $X_{1:P}^{(0)}$,$k^{(0)}$ and $B_{1:P}^{(0)}$\;
@@ -691,86 +713,95 @@ In step 3, a new path is chosen from the $N$ distinct paths generated from the c
         } 
 \end{algorithm}
 \subsection{Particle Gibbs with Backward Sampling}
-In the previous section, the particle Gibbs sampler only samples a particle at the final time $P$ according to the importance weight, and traces the ancestral lineage back of the particle to get a full path $X_{1:P}$ at each step. This may result in the particle Gibbs sampler having a poor mixing when there is significant degeneracy in the cSMC sampler. Such a problem is especially obvious when $P$ is large and $N$ is small since longer time and small number of particles often come with degeneracy. To do this, instead of only sampling the last particle and trace back to find the path, we sample $B_{1:P}$ one by one from their full conditional distributions given, $\left(\theta^{*},\textbf{X}_{1:P}^{*},\textbf{A}_{1:P-1}^{*}\right)$. More precisely, step 3 of the original particle Gibbs sampler will be replace by additional $P$ steps:
-\begin{enumerate}
-    \item Sample $B_{1:P}^{*} \sim \bar{\pi}_P^N \left(\cdot | \theta^{*}, \textbf{x}_{1:P}^{*},\textbf{a}_{1:P-1}^{*}\right)$ and keep $B_P^{*}$ only
-    \item For $n=P-1,P-2,..,2,1$, sample $B_{1:n}^{*} \sim \bar{\pi}_P^N\left(\cdot|\theta^{*},\textbf{x}_{1:P}^{*},\textbf{a}_{1:P-1}^{*},b_{n+1}^{*},..,b_P^{*}\right)$ and keep $B_n^{*}$ only 
-\end{enumerate}
-Below, we derive the conditional distribution for backward simulation in the particle Gibbs sampler. Also, $B_{1:P}$ will be independent of all the ancestor indices $\textbf{A}_{1:P-1}$. Therefore, we can do the backward simulation of $B_{1:P}$ from the marginal distribution of $B_{1:P}$ and $\textbf{X}_{1:P}^{*}$ relative to $\bar{\pi}_P^N$. By summing over all the choices of $\textbf{A}_{1:P-1}$, the marginal distribution of $B_{1:P}$ and $\textbf{X}_{1:P}^{*}$ will be given by 
+We discussed the particle Gibbs sampler in the previous section. One of the major advantages of such type of sampler is that it does not rely on the asymptotics of \(N\) to be a valid MCMC sampler. However, the particle Gibbs sampler we discussed in the previous section is likelihood to have mixing issues. In the particle Gibbs sampler we discussed before, we only samples the ancestor index at $P$ according to the importance weight $\mathbf{W}_P$, and traces the ancestral lineage back of the particles to get a full path $X_{1:P}$ at each step. This may result in the particle Gibbs sampler having a poor mixing when there is significant degeneracy in the cSMC sampler. Such a problem is especially obvious when $P$ is large and $N$ is small since longer time and small number of particles often come with degeneracy. As the particle trajectory sampled in the previous iteration must be kept fixed in the cSMC algorithm, the next sampled particle trajectory would be therefore very similar to the previous one, resulting in a poor mixing of the Gibbs sampler. One way to solve this problem was proposed by \cite{whiteley2014backwardsampling} and further explored later by \cite{lindsten2012use}. The idea is to insert a backward simulation step to the particle Gibbs sampler to mitigate path degeneracy issues. In the context of particle Gibbs sampler, one can interpret this changing \textit{Step 3} of the particle Gibbs sweep to simulations of \(b_P,b_{P-1},..,b_1\). Hence, instead of performing the original \textit{Step 3}, we do the following
+\begin{itemize}
+    \item Sample \(b_P^{*} \sim \tilde{\pi}_P^{N}(b_P^{*}|\theta^{*},\textbf{x}_{1:P}^{*,-b_{1:P}},\textbf{a}_{1:P-1}^{*,-b_{2:P}},b_{1:P},x_{1:P}^{b_{1:P}})\)
+    \item Sample \(b_{P-1}^{*} \sim \tilde{\pi}_P^{N}(b_{P-1}^{*}|\theta^{*},\textbf{x}_{1:P}^{*,-b_{1:P}},\textbf{a}_{1:P-1}^{*,-b_{2:P}},b_{1:P-1},x_{1:P-1}^{b_{1:P-1}},x_P^{b_P^{*}},b_{P}^{*})\)
+    \item ......
+    \item Sample \(b_{t}^{*} \sim \tilde{\pi}_P^{N}(b_{t}^{*}|\theta^{*},\textbf{x}_{1:P}^{*,-b_{1:P}},\textbf{a}_{1:P-1}^{*,-b_{2:P}},b_{1:t},x_{1:t}^{b_{1:t}},x_{t+1:P}^{b_{t+1:P}^{*}},b_{t+1:P}^{*})\)
+    \item ......
+    \item Sample \(b_{1}^{*} \sim \tilde{\pi}_P^{N}(b_{1}^{*}|\theta^{*},\textbf{x}_{1:P}^{*,-b_{1:P}},\textbf{a}_{1:P-1}^{*,-b_{2:P}},b_{1},x_{1}^{b_{1}},x_{2:P}^{b_{2:P}^{*}},b_{2:P}^{*})\)
+\end{itemize}
+From the above scheme, one can see that the conditional distribution of $b_t^{*}$ is independent of \(\mathbf{x}_{t+1:P}^{-b_{t+1:P}^{*}}\) and \(\mathbf{a}_{t:P-1}^{-b_{t+1:P}^{*}}\). Therefore, by marginalising \(\psi_{P}^{N,\theta}\) over \(\mathbf{x}_{t+1:P}^{-b_{t+1:P}}\) and \(\mathbf{a}_{t:P-1}^{-b_{t+1:P}}\), we obtain 
 \begin{equation}
-    \label{Eqn:Marginal of Pi_Bar}
-    \bar{\pi}_P^N \left(\theta,b_{1:P},\textbf{x}_{1:p}\right) = \frac{\pi_P\left(\theta,x_{1:P}^{b_{1:P}}\right)}{N^P} \frac{\left\{\prod_{j=1}^N K_1(x_1^j)\right\}\prod_{n=2}^P \left[\prod_{j=1}^N \left\{\sum_{l=1}^N W_{n-1}^l K_n (x_n^j|x_{1:n-1}^l)\right\}\right]}{K_1\left(x_1^{b_1}\right)\prod_{n=2}^P r(b_{n-1}|\textbf{W}_{n-1}) K_n(x_n^{b_n}|x_{1:n-1}^{b_{n-1}})}
+    \label{PMCMC-Marginal of psi}
+    \psi_{P}^{N,\theta}(\mathbf{x}_{1:t}^{-b_{1:t}},\mathbf{a}_{1:t-1}^{-b_{2:t}}|x_{1:P}^{b_{1:P}},b_{1:P}) := \prod_{\substack{j=1\\j \neq b_1}}^{N} K_1\left(x_1^j\right)\prod_{n=2}^t \left\{r\left(\mathbf{a}_{n-1}^{-b_{n}}|\mathbf{W}_{n-1},a_{n-1}^{b_n}\right)\prod_{\substack{j=1\\ j \neq b_n}}^{N} K_n(x_n^j|x_{1:n-1}^{a_{n-1}^j})\right\}
 \end{equation}
-Therefore, the conditional distribution for sampling the ancestor indices will be given by: 
+
+Hence, the conditional distribution of $b_t^{*}$ will then be given by 
 \begin{equation}
-    \label{Eqn:MarginalBSi}
+    \label{PMCMC-PGBS conditional}
     \begin{split}
-        \bar{\pi}_P^N\left(b_{1:P}|\theta^{*},\textbf{x}^{*}_{1:P},\textbf{a}^{*}_{1:P-1}\right) &= \bar{\pi}_P^N\left(b_{1:P}|\theta^{*},\textbf{x}^{*}_{1:P}\right) \propto \bar{\pi}_P^N\left(b_{1:P},\theta^{*},\textbf{x}^{*}_{1:P}\right)\\
-        &\propto  \frac{\pi_P\left(\theta,x_{1:P}^{b_{1:P}}\right)}{N^P} \frac{1}{K_1\left(x_1^{b_1}\right)\prod_{n=2}^P r(b_{n-1}|\textbf{W}_{n-1}) K_n(x_n^{b_n}|x_{1:n-1}^{b_{n-1}})} \\
-        & \propto \frac{\pi_P\left(\theta,x_{1:P}^{b_{1:P}}\right)}{K_1\left(x_1^{b_1}\right)\prod_{n=2}^P r(b_{n-1}|\textbf{W}_{n-1}) K_n(x_n^{b_n}|x_{1:n-1}^{b_{n-1}})}
-    \end{split}
+        &\tilde{\pi}_P^{N}(b_t^{*}|\theta^{*},\textbf{x}_{1:t}^{*,-b_{1:t}},\textbf{a}_{1:t-1}^{*,-b_{2:t}},b_{1:t},x_{1:t}^{b_{1:t}},x_{t+1:P}^{b_{t+1:P}^{*}},b_{t+1:P}^{*}) \\\\
+        &=\frac{\pi_P(\theta^{*},b_{1:t},b_{t+1:P}^{*},x_{1:t}^{b_{1:t}},x_{t+1:P}^{b_{t+1:P}^{*}})}{N^P}\psi_{P}^{N,\theta}(\mathbf{x}_{1:t}^{-b_{1:t}},\mathbf{a}_{1:t-1}^{-b_{2:t}}|b_{1:t},b_{t+1:P}^{*},x_{1:t}^{b_{1:t}},x_{t+1:P}^{b_{t+1:P}^{*}})\\\\
+        &=\frac{\pi_P^{\theta^{*}}(x_{1:t}^{b_{1:t}},x_{t+1:P}^{b_{t+1:P}^{*}})}{\pi_t^{\theta^{*}}(x_{1:t}^{b_{1:t}})}\frac{\pi_t^{\theta^{*}}(x_{1:t}^{b_{1:t}})\pi(\theta^{*})}{N^P}\prod_{\substack{j=1\\j \neq b_1}}^{N} K_1\left(x_1^j\right)\prod_{n=2}^t \left\{r\left(\mathbf{a}_{n-1}^{-b_{n}}|\mathbf{W}_{n-1},a_{n-1}^{b_n}\right)\prod_{\substack{j=1\\ j \neq b_n}}^{N} K_n(x_n^j|x_{1:n-1}^{a_{n-1}^j})\right\}\\\\
+        &=\frac{\pi_P^{\theta^{*}}(x_{1:t}^{b_{1:t}},x_{t+1:P}^{b_{t+1:P}^{*}})}{\pi_t^{\theta^{*}}(x_{1:t}^{b_{1:t}})}\frac{\pi(\theta^{*})W_t^{b_t}}{N^P}\psi_t^{N,\theta^{*}}(\mathbf{x}_{1:t},\mathbf{a}_{1:t-1})\left\{\prod_{n=1}^{t}\sum_{i=1}^N w_n^i\right\} \propto W_t^{b_t} \frac{\pi_P^{\theta^{*}}(x_{1:t}^{b_{1:t}},x_{t+1:P}^{b_{t+1:P}^{*}})}{\pi_t^{\theta^{*}}(x_{1:t}^{b_{1:t}})}
+    \end{split} 
 \end{equation}
+where the last line is derived in a similar way as we did in \eqref{PMCMC-another way of writing piP}. In fact, the backward sampling step inserted in the particle Gibbs corresponds to the backward smoothing schedule of a standard SMC algorithm. We summarise the corresponding particle Gibbs with backward sampling (PGBS) sampler in Algorithm \ref{Alg: PGBSi}
 
-For Step 1 in the above backward simulation scheme, we sample $B_P^{*} = k$ with probability proportional to the backward simulation weight 
-\begin{subequations}
-    \begin{equation}
-        \label{Eqn:Backward Weight-P}
-        W_{P|P}^{k} \propto \frac{\pi_P\left(\theta^{*},x_{1:P}^k\right)}{p\left(x_{1:P}^k\right)} \propto W_P^k
-    \end{equation}
-
-And for $n = P-1,..,1$, we sample $B_n^{*} = k$ with probability proportional to the backward simulation weight given by
-\begin{equation}
-    \label{Eqn:Backward Weight - n}
-    W_{n|P}^k \propto W_n^k \frac{\pi_P\left(\theta^{*},x_{1:n}^k,x_{n+1}^{*},x_{n+2}^{*},..,x_{P}^{*}\right)}{\pi_n\left(\theta^{*},x_{1:n}^k\right)}
-\end{equation}
-\end{subequations}
 \begin{algorithm}[htb!]
     \caption{particle Gibbs with Backward Simulation}\label{Alg: PGBSi}
     Start at $\theta^{(0)}$, $X_{1:P}^{(0)}$ and $B_{1:P}^{(0)}$ arbitrarily\;
     \For{n=1,2,...}{
-        Sample $\theta^{(n)} \sim \pi_{P}\left(\cdot|X_{1:P}^{(n-1)}\right)$\;
-        Run a cSMC algorithm conditional on $X_{1:P}^{(n-1)}, B_{1:P}^{(n-1)}$, outlined in Algorithm \ref{Alg:CSMC}, to get $\textbf{X}_{1:P}^{(n)}$ and $\textbf{A}_{1:P-1}^{(n)}$\;
-        Run a backward simulation to get $B_{1:P}^{(n)}$:\;
-            \For {$n=P$}
-            {
-                Sample $B_P^{(n)} = k$ with probability proportional to $W_{P|P}^k$, described in \eqref{Eqn:Backward Weight-P}\;
-            }
-            \For{$n=P-1,..,1$}{
-                Sample $B_n^{(n)} = k$ with probability proportional to $W_{n|P}^k$, described in \eqref{Eqn:Backward Weight - n}\;
-            }
-        Set $X_{1:P}^{(n)} = \left(X_1^{(n),B_{1}^{(n)}},...,X_P^{(n),B_{P}^{(n)}}\right)$\;
+        Sample $\theta^{(n)} \sim \pi_{P}\left(\cdot|X_{1:P}^{(n-1)}\right)$ using e.g. a MH kernel\;
+        Run a cSMC algorithm conditional on $x_{1:P}^{(n-1)}, b_{1:P}^{(n-1)}$ and $\theta^{(n)}$, outlined in Algorithm \ref{Alg:CSMC}, to get $\textbf{X}_{1:P}^{(n)}$ and $\textbf{A}_{1:P-1}^{(n)}$ and $\mathbf{W}_{1:P}^{(n)}$\;
+        \For{$t=P,P-1,...,2,1$}{
+            Set $b_t^{(n)}=k$ with probability 
+            \[
+                W_t^{(n),k}\frac{\pi_P^{\theta^{(n)}}(x_{1:t}^{(n),k},x_{t+1:P}^{(n),b_{t+1:P}^{*}})}{\pi_t^{\theta^{*}}(x_{1:t}^{(n),k})}
+            \]
+            where $b_t=k$ and $b_{j} = a_{j}^{(n),b_{j+1}}$
+        }
+        Set \(x_{1:P}^{(n)}:= x_{1:P}^{(n),b_{1:P}^{(n)}}\)
     }
 \end{algorithm}
-Algorithm \ref{Alg: PGBSi} outlines the detail of particle Gibbs sampler with backward simulation. By incorporating backward simulation, instead of fixing a path deterministically, the algorithm now can explore all the possible combinations of the particles generated from the SMC sampler and hence the probability of a new path being proposed become much higher. Therefore, the particle Gibbs with backward simulation will hugely improve the mixing of the Gibbs sampler, hence reducing the variance for estimating the static-parameters. 
-\subsection{Metropolis-Hastings within Particle Gibbs}
-Often, it is impossible to sample a new parameter exactly from the posterior parameter density $\pi_P\left(\theta|x_{1:P}\right)$. Lindsten et al. (2018) proposed a method that combines Metropolis-Hastings method and Gibbs sampler together. The method replaces Line 3 of Algorithm \ref{Alg: PGBSi} with a Metropolis-Hastings update. Instead of sampling $\theta^{(n)}$ directly from $\pi_P\left(|x_{1:P}^{(n-1)}\right)$, a new value of $\theta$, $\theta^{'}$, is proposed according to a proposal density $q\left(\cdot|\theta^{(n-1)}\right)$. We will then accept this new value with probability 
+The PGBS sampler generally has much better than the standard particle Gibbs sampler. Due to the addition of the backward sampling step, we would be able to explore all the possible trajectories created by the combinations of particles obtained from the cSMC algorithm. As a result, the new sampled trajectory would be highly likely significantly different from the previous one. This brings a big improvement on the mixing in the state space, hence the particle Gibbs sampler overall. 
+
+For the VRPF method, denote \(\check{\mathcal{J}}_{n}:=(\check{k}_n,\check{\tau}_{n,1:\check{k}_n},\check{\phi}_{n,1:\check{k}_n})\) be the collection of jump times and values that define the PDP in the interval \((t_{n-1},t_P)\), we then should have that 
+\begin{align*}
+    \check{k}_n &:= \sum_{j=n}^{P} k_j \\
+    \check{\tau}_{n,1:\check{k}_n} &:=  \bigcup_{j=n}^{P} \left\{\tau_{j,1:k_j}\right\}\\
+    \check{\phi}_{n,1:\check{k}_n} &:=  \bigcup_{j=n}^{P} \left\{\phi_{j,1:k_j}\right\}
+\end{align*}
+Suppose the ancestor indices $b_{n+1}^{*},..,b_P^{*}$ have already been sampled and the corresponding particles \(x_{n}^{b_n^*},...,x_P^{b_P^*}\) form $\check{\mathcal{J}}_{n+1}^{*}$. If $\check{k}_{n+1}^{*}>0$, the unnormalised backward sampling incremental weight will be given by 
 \begin{equation}
-    \label{AcceptanceRate}
-    \alpha\left(\theta^{(n-1)},\theta^{'}\right) := \min \left(1,\frac{\pi_{P}\left(\theta^{'}|x_{1:P}^{(n-1)}\right)}{\pi_P\left(\theta^{(n-1)}|x_{1:P}^{(n-1)}\right)}\frac{q\left(\theta^{(n-1)}|\theta^{'}\right)}{q\left(\theta^{'}|\theta^{(n-1)}\right)}\right)
+    \label{PMCMC - VRPF Backward Simulation Weight 1}
+    \mathcal{G}_{n|P}(x_{1:n}^{b_{1:n}}) := \frac{f(\check{\tau}_{n+1,1}^{*}|\hat{\tau}_{n,\hat{k}_n})g(\check{\phi}_{n+1,1}^{*}|\hat{\phi}_{n,\hat{k}_n},\hat{\tau}_{n,\hat{k}_n},\check{\tau}_{n+1,1}^{*})p(y_{(t_n,\check{\tau}_{n+1,1}^{*}]}|\hat{\phi}_{n,\hat{k}_n})}{S(\hat{\tau}_{n,\hat{k}_n},t_n)}
 \end{equation}
-which is a standard Metropolis-Hastings update. For the PDP models, the posterior parameter density is also possible to calculate since 
-$$\pi_P\left(\theta^{'}|x_{1:P}\right) \propto \pi_P\left(x_{1:P}|\theta^{'},y_{(0,t_P]}\right)p\left(\theta^{'}\right)\propto p\left(y_{(0,t_P]}|x_{1:P},\theta^{'})p(x_{1:P}|\theta^{'}\right)p\left(\theta^{'}\right)$$
-By plugging the Metropolis-Hastings step into particle Gibbs with Backward Simulation scheme, we obtain the Metropolis within particle Gibbs method (MwPG). This is represented in Algorithm
-\begin{algorithm}[htb!]
-    \caption{Metropolis within particle Gibbs (MwPG)}
-        Initialise $\theta^{(0)}$,$X_{1:P}^{(0)}$ and $B_{1:P}^{(0)}$ arbitrarily\;
-        \For{n = 1,2,...}{
-        Perform a Metropolis-Hastings step to obtain a new value of $\theta$\;
-        \begin{itemize}
-            \item Propose $\theta^{'} \sim q(\cdot|\theta^{(n-1)})$
-            \item Set $\theta^{(n)} := \theta^{'}$ with probability given in Equation \eqref{AcceptanceRate}
-            \item Otherwise, set $\theta^{(n)} := \theta^{(n-1)}$
-        \end{itemize}
-        Run a cSMC algorithm conditional on $X_{1:P}^{(n-1)}, B_{1:P}^{(n-1)}$, outlined in Algorithm \ref{Alg:CSMC}, to get $\textbf{X}_{1:P}^{(n)}$ and $\textbf{A}_{1:P-1}^{(n)}$\;
-        Run a backward simulation to get $B_{1:P}^{(n)}$ using the same method as in Algorithm \ref{Alg: PGBSi}\;
-        Set $X_{1:P}^{(n)} = \left(X_1^{(n),B_{1}^{(n)}},...,X_P^{(n),B_{P}^{(n)}}\right)$\;}
-    \label{Alg:Metropolis within PG}
-\end{algorithm}
+If $\check{k}_{n+1}^{*} = 0$, the corresponding backward sampling incremental weight will be given by 
+\begin{equation}
+    \label{PMCMC - VRPF Backward Simulation Weight 2}
+    \mathcal{G}_{n|P}(x_{1:n}^{b_{1:n}}) = \frac{S(\hat{\tau}_{n,\hat{k}_n},t_P)p(y_{(t_n,t_P]}|\hat{\phi}_{n,\hat{k}_n})}{S(\hat{\tau}_{n,\hat{k}_n},t_n)}
+\end{equation}
 
+For the BlockVRPF sampler, we use the same notation $\check{\mathcal{J}}_{n}$ to denote the collection of jump times and values defined by \(Z_{n},..,Z_p\). Given $Z_{n+1}^{b_{n+1}^{*}},..,Z_{P}^{b_{P}^{*}}$ and the corresponding $\check{\mathcal{J}}_{n}^{*}$, if $M_{n}^{*} = 1$, the corresponding backward sampling incremental weight would be given by 
+\begin{equation}
+    \label{PMCMC - BlockVRPF Backward Simulation Weight 1}
+    \mathcal{G}_{n|P}(z_{1:n}^{b_{1:n}}) := \frac{\mathbbm{I}(\mathring{\tau}_n^{*}>\hat{\tau}_{n,\hat{k}_n})f(\mathring{\tau}_n^{*}|\hat{\tau}_{n,\hat{k}_n})g(\mathring{\phi}_n^P{*}|\hat{\phi}_{n,\hat{k}_n},\mathring{\tau}_n^{*},\hat{\tau}_{n,\hat{k}_n})\mu(M_n^{*}|z_{1:n},z_{n+1:P}^{b_{n+1:P}^*})}{S(\hat{\tau}_{n,\hat{k}_n},t_n)p(y_{(\mathring{\tau}_n^{*},t_n]}|\hat{\phi}_{n,\hat{k}_n})}
+\end{equation}
+When $M_n^{*} = 0$ and $U_n^{*} = \emptyset$, if $\check{k}_n = 0$, we have 
+\begin{equation}
+    \label{PMCMC - BlockVRPF Backward Simulation Weight 2}
+    \mathcal{G}_{n|P}(z_{1:n}^{b_{1:n}}) := \frac{\mathbbm{I}(\hat{\tau}_{n,\hat{k}_n} < t_{n-1})S(\hat{\tau}_{n,\hat{k}_n},t_P)\mu(M_n^{*}|z_{1:n},z_{n+1:P}^{b_{n+1:P}^*})p(y_{(t_n,t_P]}|\hat{\phi}_{n,\hat{k}_n})}{S(\hat{\tau}_{n,\hat{k}_n},t_n)}
+\end{equation}
+If $\check{k}_n^{*} > 0$, we then have 
+\begin{multline}
+    \label{PMCMC - BlockVRPF Backward Simulation Weight 3}
+    \mathcal{G}_{n|P}(z_{1:n}^{b_{1:n}}) := \frac{f(\check{\tau}_{n+1,1}^{*}|\hat{\tau}_{n,\hat{k}_n})g(\check{\phi}_{n+1,1}^{*}|\hat{\phi}_{n,\hat{k}_n},\hat{\tau}_{n,\hat{k}_n},\check{\tau}_{n+1,1}^{*})p(y_{(t_n,\check{\tau}_{n+1,1}^{*}]}|\hat{\phi}_{n,\hat{k}_n})}{S(\hat{\tau}_{n,\hat{k}_n},t_n)} \\
+    \times \mathbbm{I}(\hat{\tau}_{n,\hat{k}_n} < t_{n-1})\mu(M_n^{*}|z_{1:n},z_{n+1:P}^{b_{n+1:P}^*})
+\end{multline}
+In the case \(U_n^{*} \neq \emptyset\), we should have 
+\begin{multline}
+    \label{PMCMC - BlockVRPF Backward Simulation Weight 4}
+    \mathcal{G}_{n|P}(z_{1:n}^{b_{1:n}}) := \frac{f(\mathring{\tau}_n^{*}|\hat{\tau}_{n,\hat{k}_n-1})g(\mathring{\phi}_n^{*}|\hat{\phi}_{n,\hat{k}_{n}-1},\hat{\tau}_{n,\hat{k}_n-1},\mathring{\tau}_n^{*})}{f(\hat{\tau}_{n,\hat{k}_{n}}|\hat{\tau}_{n,\hat{k}_n-1})g(\hat{\phi}_{n,\hat{k}_{n}}|\hat{\phi}_{n,\hat{k}_{n}-1},\hat{\tau}_{n,\hat{k}_n-1},\mathring{\tau}_n^{*})}
+    \times\frac{p(y_{(\hat{\tau}_{n,\hat{k}_n}\wedge \mathring{\tau}_n^{*},\mathring{\tau}_n^{*})}|\hat{\phi}_{n,\hat{k}_n-1})}{p(y_{(\hat{\tau}_{n,\hat{k}_n}\wedge \mathring{\tau}_n^{*},t_n)}|\hat{\phi}_{n,\hat{k}_n-1},\hat{\phi}_{n,\hat{k}_n})}\\\\
+    \times \frac{\mu(M_n^{*}|z_{1:n},z_{n+1:P}^{b_{n+1:P}^*})\lambda(\hat{\tau}_{n,\hat{k}_{n}},\hat{\phi}_{n,\hat{k}_{n}}|z_{1:n},z_{n+1:P}^{b_{n+1:P}^*})}{S(\hat{\tau}_{n,\hat{k}_{n}},t_n)}\times\mathbbm{I}(\hat{\tau}_{n,\hat{k}_n}>t_{n-1},\mathring{\tau}_{n}^{*}>\hat{\tau}_{n,\hat{k}_n-1})
+\end{multline}
 \section{Auxiliary Variable Rejuvenation}
-In this section, we discussed the rejuvenation step introduced by \cite{finke2014static} to improve the mixing of the particle Gibbs scheme. For the BlockVRPF scheme, the incremental weights at step $n$, described in Equation \eqref{BlockVRPF-AdjustG(b)} and \eqref{BlockVRPF-BirthG(a)}, involve a likelihood ratio of the observations given the original PDP and the modified PDP. Hence, if a modification (i.e. a birth move or a birth move) on a particular particle moves the PDP from a wrong position to the correct position, the likelihood ratio will become so large that this specific particle will be dominating over all the others. In this case, the particle Gibbs sampler will be stuck in this specific path and it will be very hard for a new path to be proposed, even though it is not a path that fits the observations well. 
+In this section, we discussed the rejuvenation step introduced by \cite{finke2014static} to improve the mixing of the particle Gibbs scheme. For the BlockVRPF scheme, the incremental weights at step $n$, described in Equation \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU},\eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} and \eqref{BlockVRPF_SMC_Incremental Weight_Birth}, involve a likelihood ratio of the observations given the original PDP and the modified PDP. Hence, if a modification (i.e. a birth move or a birth move) on a particular particle moves the PDP from a wrong position to the correct position, the likelihood ratio will become so large that this specific particle will be dominating over all the others. In this case, the particle Gibbs sampler will be stuck in this specific path and it will be very hard for a new path to be proposed, even though it is not a path that fits the observations well. 
 
-The rejuvenation step proposed by Finke et al. (2014) can be used to solve this problem. This step is suitable whenever the SMC filtering scheme involves auxiliary variables. In the BlockVRPF scheme, what we are really interested is the distribution of variables $(x_{1,m},x_{2,m},..,x_{n-1,m},x_n)$ and $\Theta$. Therefore, we are only interested in the distribution $\gamma_{n}(x_{1,m},..,\allowbreak x_{n-1,m},x_n)$ in Equation \eqref{Block-VRPF Target}. Hence, $M_{1:n-1}$ and $U_1^{'},...,U_{n-1}^{'}$ are the auxiliary variables appeared in the target. In the standard particle Gibbs scheme, we propose a new value of $\Theta$ conditioning on both the interested and auxiliary variables. The rejuvenation step, instead, samples $\Theta$ conditioning on the interested variables only. Then, all the auxiliary variables will be re-sampled conditioning on the interested variable. Hence, if the sampled path $X_{1:P}$ can be splitted into the interested variables $X_I$ and auxiliary variables $X_A$ (i.e. $X_{1:P} := (X_I,X_A)$) and the target density $\pi_{P}(\theta,x_{1:P}) := \Tilde{\pi}_P(\theta,x_I)\times L(x_A|x_I)$, we will split the first step at each particle Gibbs sweep. This method will be outlined in Algorithm \ref{particle Gibbs-rejuvenation}
+The rejuvenation step proposed by \cite{finke2014static} can be used to solve this problem. This step is suitable whenever the SMC filtering scheme involves auxiliary variables. In the BlockVRPF scheme, what we are really interested is the distribution of variables $(x_{1,m},x_{2,m},..,x_{n-1,m},x_n)$ and $\Theta$. Therefore, we are only interested in the distribution $\gamma_{n}(x_{1,m},..,\allowbreak x_{n-1,m},x_n)$ in Equation \eqref{Block-VRPF Target}. Hence, $M_{1:n-1}$ and $U_1^{'},...,U_{n-1}^{'}$ are the auxiliary variables appeared in the target. In the standard particle Gibbs scheme, we propose a new value of $\Theta$ conditioning on both the interested and auxiliary variables. The rejuvenation step, instead, samples $\Theta$ conditioning on the interested variables only. Then, all the auxiliary variables will be re-sampled conditioning on the interested variable. Hence, if the sampled path $X_{1:P}$ can be splitted into the interested variables $X_I$ and auxiliary variables $X_A$ (i.e. $X_{1:P} := (X_I,X_A)$) and the target density $\pi_{P}(\theta,x_{1:P}) := \Tilde{\pi}_P(\theta,x_I)\times L(x_A|x_I)$, we will split the first step at each particle Gibbs sweep. This method will be outlined in Algorithm \ref{particle Gibbs-rejuvenation}
 
 \begin{algorithm}[htb!]
     \caption{particle Gibbs with rejuvenation step}
@@ -787,8 +818,8 @@ The rejuvenation step proposed by Finke et al. (2014) can be used to solve this 
 \end{algorithm}
 
 Note that the rejuvenation step re-samples the auxiliary variables, which are the modification moves as well as the jump times and values being modified at each SMC step. Hence, this gives the path a chance to have another modification move or another jump times and values to be modified. As such, the likelihood ratio of this specific particle will possibly be decreased, giving other particles from the SMC step an opportunity to be chosen at each sweep. Therefore, such a rejuvenation step will help the particle Gibbs scheme to escape from the stuck path, hence improving the mixing of the chain. 
-\section{Derivation of Full Conditional Densities Jump-value Proposals}
 
+\newpage
 \bibliographystyle{icml2020}
 \bibliography{reference}
 \end{document}
