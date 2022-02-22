@@ -4,45 +4,45 @@ The top-level auxiliary file: main.aux
 The style file: icml2020.bst
 Database file #1: reference.bib
 Warning--I didn't find a database entry for "chopin2004central"
-You've used 9 entries,
+You've used 12 entries,
             2773 wiz_defined-function locations,
-            654 strings with 6457 characters,
-and the built_in function-call counts, 4387 in all, are:
-= -- 417
-> -- 194
-< -- 9
-+ -- 66
-- -- 57
-* -- 345
-:= -- 643
-add.period$ -- 29
-call.type$ -- 9
-change.case$ -- 45
-chr.to.int$ -- 9
-cite$ -- 18
-duplicate$ -- 211
-empty$ -- 386
-format.name$ -- 74
-if$ -- 942
+            671 strings with 6854 characters,
+and the built_in function-call counts, 5855 in all, are:
+= -- 553
+> -- 275
+< -- 10
++ -- 93
+- -- 81
+* -- 479
+:= -- 865
+add.period$ -- 38
+call.type$ -- 12
+change.case$ -- 62
+chr.to.int$ -- 12
+cite$ -- 24
+duplicate$ -- 273
+empty$ -- 508
+format.name$ -- 103
+if$ -- 1246
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 10
-newline$ -- 53
-num.names$ -- 36
-pop$ -- 86
+missing$ -- 13
+newline$ -- 68
+num.names$ -- 48
+pop$ -- 113
 preamble$ -- 1
-purify$ -- 37
+purify$ -- 51
 quote$ -- 0
-skip$ -- 164
+skip$ -- 210
 stack$ -- 0
-substring$ -- 242
-swap$ -- 34
+substring$ -- 323
+swap$ -- 37
 text.length$ -- 3
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 94
+type$ -- 127
 warning$ -- 0
-while$ -- 45
+while$ -- 60
 width$ -- 0
-write$ -- 126
+write$ -- 165
 (There was 1 warning)

@@ -36,18 +36,23 @@ right = 20mm
 }
 \begin{document}
 \section{Piecewise Deterministic Processes}
-Piecewise Deterministic Processes (PDPs) are stochastic processes that jump randomly at an almost surely countable number of random times but otherwise evolve deterministically in continuous time. In this chapter, we give an introduction on this class of models and we will follow to give a mathematical representation of this class of models.
+Piecewise Deterministic Processes (PDPs) are stochastic processes that jump randomly at an almost surely countable number of random times but otherwise evolve deterministically in continuous time. In this chapter, we give an introduction to this class of models and then give a mathematical representation of this class of models.
 
 Let $(\tau_j,\phi_j)_{j \in \mathbb{N}}$ be a stochastic process that represents the random jump times and the corresponding jump values. Moreover, all the $\tau$'s will take values such that $\tau_0 = 0$ and $\tau_0<\tau_1<\tau_2<...$. We also define $\Phi$ to be the support for all the jump values $(\phi_j)_{j \in \mathbb{N}}$. A Piecewise Deterministic Process (PDP) is a continuous time stochastic process $(\zeta_t)_{t \geq 0}$ such that $\zeta_0 := \phi_0$ and 
 $$\zeta_t := F^{\theta}(t|\tau_{v_t},\phi_{v_t})$$
-where $v_t := \sup \{j \in \mathbb{N}|\tau_j \leq t \}$ represents the latest jump time before time $t$. Hence, a piecewise deterministic process will evolve deterministically according to $F^{\theta}$ after time $\tau_{j}$ until it reaches the next jump time $\tau_{j+1}$. Here, we use $\theta$ to represent all the static parameters used in the model. Suppose that we also have a sequence of known discrete times $0=t_0<t_1<t_2<...$ and define $K_n := v_{t_n}$ to be the number of jumps before time $t_n$. It is clear that the process $\zeta_{[0,t_n]}$ can be completely determined by $\left(K_n,\tau_{1:K_n},\phi_{1:K_n},\phi_0\right)$ and the deterministic function \(F^{\theta}\). For simplicity, we propose a Markovian prior on the jump times and jump values in the interval $[0,t_n]$, i.e.
-\begin{equation}
+where $v_t := \sup \{j \in \mathbb{N}|\tau_j \leq t \}$ represents the latest jump time before time $t$. Hence, a piecewise deterministic process will evolve deterministically according to $F^{\theta}$ after time $\tau_{j}$ until it reaches the next jump time $\tau_{j+1}$. Here, we use $\theta$ to represent all the static parameters used in the model. Suppose that we also have a sequence of known discrete times $0=t_0<t_1<t_2<...$ and define $k_n := v_{t_n}$ to be the number of jumps before time $t_n$  and \(\zeta_{[a,b]} := \left\{\zeta_t| t \in [a,b]\right\}\) be the PDP in the time interval \([a,b]\). It is clear that the process $\zeta_{[0,t_n]}$ can be completely determined by $\left(K_n,\tau_{1:K_n},\phi_{1:K_n},\phi_0\right)$ and the deterministic function \(F^{\theta}\). For simplicity, we propose a Markovian prior on the jump times and jump values in the interval $[0,t_n]$, i.e.
+\begin{multline}
 \label{eqn:Chap1-PDMP-Prior}
-    p_n^{\theta}(k_n,\tau_{1:k_n},\phi_{1:k_n},\phi_0) = S^{\theta}(\tau_{k_n},t_n)q_0^{\theta}(\phi_0)\mathbbm{1}_{(0,t_n]}(\tau_{k_n})\prod_{j=1}^{n} f^{\theta}(\tau_j|\tau_{j-1}) g^{\theta}(\phi_j|\tau_j,\tau_{j-1},\phi_{j-1})
-\end{equation}
-Where \(S^{\theta}(\tau_{k_n},t_n):= 1- \int_{\tau_{k_n}}^{t_n} f^{\theta}(s|\tau_{k_n})\,ds\) denotes the probability that no jump occurring in the interval $(\tau,t]$ and $f^{\theta}$, $g^{\theta}$ represents the conditional probability density of the jump times and the associated jump values. The Markovian structure of the process implies that inter-jump times $\tau_n - \tau_{n-1}$ are independent with each other and the jump value $\phi_n$ at $\tau_n$ will only depend on the previous jump value $\phi_{n-1}$ and the latest inter-jump time $\tau_n - \tau_{n-1}$.
+    p_n^{\theta}(k_n,\tau_{1:k_n},\phi_{1:k_n},\phi_0) = S^{\theta}(\tau_{k_n},t_n)q_0^{\theta}(\phi_0)\mathbbm{I}_{(0,t_n]}(\tau_{k_n})\mathbbm{I}(0 < \tau_1 < \tau_2 <.. <\tau_{k_n} < t_n)\\
+    \times \prod_{j=1}^{n} f^{\theta}(\tau_j|\tau_{j-1}) g^{\theta}(\phi_j|\tau_j,\tau_{j-1},\phi_{j-1})
+\end{multline}
+Where \(S^{\theta}(\tau_{k_n},t_n):= 1- \int_{\tau_{k_n}}^{t_n} f^{\theta}(s|\tau_{k_n})\,ds\) denotes the probability that no jump occurring in the interval $(\tau_{k_n},t_n]$ and $f^{\theta}$, $g^{\theta}$ represents the conditional probability density of the jump times and the associated jump values. Note that we also included the density of $k_n$, the number of jumps up to $t_n$ in the posterior $\pi_n$. The reason why we included it in the posterior is that $\pi_n$ can therefore be defined on the increasing subsets of the same space 
+\begin{equation*}
+    \Tilde{E}_n = \bigcup_{k=0}^{\infty} \left\{\{k\}\times T_{n,k} \times \Phi^{k+1}\right\}
+\end{equation*}
+where $T_{n,k} := \left\{(\tau_1,...,\tau_k) \in (0,\infty)^k : 0 < \tau_1 <...< \tau_k <= tn\right\}$.The Markovian structure of the process implies that inter-jump times $\tau_n - \tau_{n-1}$ are independent with each other and the jump value $\phi_n$ at $\tau_n$ will only depend on the previous jump value $\phi_{n-1}$ and the latest inter-jump time $\tau_n - \tau_{n-1}$.
 
-For most of the time, such a continuous time stochastic process can only be observed at discrete times with some measurement errors. Let $y_{(s,t]}$ be the observations obtained in the interval $(s,t]$ and $p^{\theta}(y_{(s,t]}|\zeta_{(s,t]})$ be the density of the observations given the PDP. We also assume that the observations obtained in disjoint intervals are conditionally independent given the PDP. Hence, we will have that 
+In the real settings, such a continuous time stochastic process can only be observed at discrete times with some measurement errors. Let $y_{(s,t]}$ be the observations obtained in the interval $(s,t]$ and $p^{\theta}(y_{(s,t]}|\zeta_{(s,t]})$ be the density of the observations given the PDP. We also assume that the observations obtained in disjoint intervals are conditionally independent given the PDP. Hence, we will have that 
 
 \begin{equation}
 \label{eqn:Chap1-PDMP-Likelihood}
@@ -63,16 +68,18 @@ The posterior density of the jump times and values up to $t_n$ will then be give
 		 &=p_n^{\theta}(k_n,\tau_{1:k_n},\phi_{1:k_n},\phi_0)  p^{\theta}(y_{(0,t_n]}|\zeta_{(0,t_n]}) / Z_n^{\theta}		
 	\end{split} 
 \end{equation}
-where $Z_n^{\theta}$ is the normalising constant, which is typically unknown. We will refer this posterior distribution as $\pi_n$ in the future discussion. Note that we did not include the density of $k_n$, the number of jumps up to $t_n$ in the posterior $\pi_n$. The reason why we included it in the posterior is that $\pi_n$ can be defined on the increasing subsets of the same space 
-\begin{equation*}
-    \Tilde{E}_n = \bigcup_{k=0}^{\infty} \left\{\{k\}\times T_{n,k} \times \Phi^{k+1}\right\}
-\end{equation*}
-where $T_{n,k} := \left\{(\tau_1,...,\tau_k) \in (0,\infty)^k : 0 < \tau_1 <...< \tau_k <= tn\right\}$. In practice, we are often interested in the Bayesian inferences based on the posterior distributions of the jumps defined in \eqref{eqn:Chap1-PDMP-Posterior} with known static model paramters \(\theta\). It is a more common problem to make Bayesian inference inferences on the static parameter \(\theta\). In this case, we assign a prior \(\pi(\theta)\) to the parameters and try to find the posterior distribution of \(\theta\)
+where $Z_n^{\theta}$ is the normalising constant, which is typically unknown. We will refer this posterior distribution as $\pi_n$ in the future discussion when \(\theta\) is assumed to be known. In practice, we are often interested in the Bayesian inferences based on the posterior distributions of the jumps defined in \eqref{eqn:Chap1-PDMP-Posterior} with known static model paramters \(\theta\). It is a more common problem to make Bayesian inference on the static parameter \(\theta\). In this case, we assign a prior \(\pi(\theta)\) to the parameters and try to find the posterior distribution of \(\theta\)
 \[
   \pi(\theta|y_{(0,t_n]}) = \int \pi(\theta)\pi_n^{\theta}(dk_n,d\tau_{1:k_n},d\phi_{0:k_n}|y_{(0,t_n]})  
 \]
 Since the integral involved in the above expression is in general intractable, we will often turn to employing Monte Carlo methods to perform such inferences. 
 \section{Related Literature}
+To make inferences on the PDMP models, several particle filters have been proposed in the literature. \cite{godsill2005variable} proposed a particle filter that is based on a bootstrap approach. Such a method is termed as \textit{variable rate particle filters} (VRPF). One of the main drawbacks of VRPF is that particles are only proposed based on the information up to a certain time. As a result, later information would not be about to be used to guide the proposals of particles even if they are highly informative.  A particle filter based around the Sequential Monte Carlo (SMC) Sampler of \cite{del2006sequential} ahs been proposed later by \cite{whiteley2011monte}. This alleviate the path degeneracy problem of \cite{godsill2005variable}. However, the way \cite{whiteley2011monte} formulates the problem makes the resulting particle filter unsuitable for perform backward simulation, which is an important variance reduction step for SMC samplers. \cite{finke2014static} made modifications and reformulate the particle filter of \cite{whiteley2011monte} to make it suitable for backward simulations. A corresponding particle Gibbs sampler was also proposed to make Bayesian inferences on the static parameters of the PDMP models. However, the particle filters proposed by \cite{whiteley2011monte} and \cite{finke2014static} incur an approximation on the posterior distribution of the PDMP and this will become a problem when the PDMP is likely to jump more than once within an observing window. Numerical results in \cite{finke2014static} also shows that such an approximation may become obivious in certain models. 
+
+We propose to solve the problem from a different direction. To alleviate the problems existing in \cite{godsill2005variable}, we formulate a particle filter based on the block sampling strategies of \cite{doucet2006efficient}. At each time, in addition to proposing jumps in the current interval, we also make use of the new information available to make modifications on the jumps proposed in the previous intervals. 
+
+
+
 
 \section{Sequential Monte Carlo Methods}
 \subsection{Standard Sequential Monte Carlo (SMC) samplers}
@@ -239,6 +246,18 @@ Moreover, the extended target density incorporates the actual target as a margin
 \end{equation}
 If resampling steps are also included in this scheme, the weights at step $n$ will then be equal to the incremental weights only. Details of the Block SMC method will be listed in \textbf{Algorithm 3}.  
 \\\\
+\begin{algorithm}
+    \caption{Block SMC}
+    \For{$n=1$}{
+        Sample \(X_1^i(1) \sim K_1^{\theta}(dx_1)\)\;
+        Set \(Z_1^i := X_1^i(1)\)\;
+        Calculate and normalise the weights 
+        \[
+          W_1^i \propto \frac{\tilde{\gamma}_1^{\theta}(z_1^i)}{K_1^{\theta}(z_1^i)}  
+        \] \\
+    
+    }
+\end{algorithm}
 \textbf{Algorithm 3}(Block SMC)
 \begin{enumerate}
     \item For $n=1$,
@@ -541,7 +560,8 @@ When $m_{n-1} = 1$, i.e. a 'birth' is proposed,
 In Equation \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}, \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} and \eqref{BlockVRPF_SMC_Incremental Weight_Birth}, $h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$ and $K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,1,u_{n-1},z_{1:n-1}\right)$ will all become $1$ when $k_n=0$. We omit the explicit representation of these two situations here since they are actually the special cases of the above representations. 
 
 The BlockVRPF method is outlined in Algorithm \ref{Alg:BlockVRPF}. The sampling schemes are not specifically outlined according to each case. More specifically, $U_{n-1}^i$ in line 12 of Algorithm \ref{Alg:BlockVRPF} will become $\emptyset$ when $M_{n-1}^i = 0$ and $k_{n-1}^{A_{n-1}^i} = 0$. 
-
+\section{Generic Formulation of BlockVRPF Samplers}
+We discussed a specific way of modifying the jump times and values in each time interval. Such modifications are similar to \cite{finke2014static} and \cite{whiteley2011monte}. In this section, we argue that the BlockVPRF sampler are suitable for more general modifications. 
 \begin{algorithm}
     \caption{Block Variable Rate Particle Filter (BlockVRPF)}\label{Alg:BlockVRPF}
     \For{n=1}{
@@ -712,7 +732,7 @@ Hence, we can see that to perform \textit{Step 3}, one simply choose \(b_P = k\)
             Set $X_{1:P}^{(n)} = \left(X_{1}^{(n),B_{1}^{(n)}},...,X_P^{(n),B_{P}^{(n)}}\right)$\;
         } 
 \end{algorithm}
-\subsection{Particle Gibbs with Backward Sampling}
+\subsection{Particle Gibbs with Backward Sampling}\label{Section-BackwardSimulation}
 We discussed the particle Gibbs sampler in the previous section. One of the major advantages of such type of sampler is that it does not rely on the asymptotics of \(N\) to be a valid MCMC sampler. However, the particle Gibbs sampler we discussed in the previous section is likelihood to have mixing issues. In the particle Gibbs sampler we discussed before, we only samples the ancestor index at $P$ according to the importance weight $\mathbf{W}_P$, and traces the ancestral lineage back of the particles to get a full path $X_{1:P}$ at each step. This may result in the particle Gibbs sampler having a poor mixing when there is significant degeneracy in the cSMC sampler. Such a problem is especially obvious when $P$ is large and $N$ is small since longer time and small number of particles often come with degeneracy. As the particle trajectory sampled in the previous iteration must be kept fixed in the cSMC algorithm, the next sampled particle trajectory would be therefore very similar to the previous one, resulting in a poor mixing of the Gibbs sampler. One way to solve this problem was proposed by \cite{whiteley2014backwardsampling} and further explored later by \cite{lindsten2012use}. The idea is to insert a backward simulation step to the particle Gibbs sampler to mitigate path degeneracy issues. In the context of particle Gibbs sampler, one can interpret this changing \textit{Step 3} of the particle Gibbs sweep to simulations of \(b_P,b_{P-1},..,b_1\). Hence, instead of performing the original \textit{Step 3}, we do the following
 \begin{itemize}
     \item Sample \(b_P^{*} \sim \tilde{\pi}_P^{N}(b_P^{*}|\theta^{*},\textbf{x}_{1:P}^{*,-b_{1:P}},\textbf{a}_{1:P-1}^{*,-b_{2:P}},b_{1:P},x_{1:P}^{b_{1:P}})\)
@@ -818,7 +838,10 @@ The rejuvenation step proposed by \cite{finke2014static} can be used to solve th
 \end{algorithm}
 
 Note that the rejuvenation step re-samples the auxiliary variables, which are the modification moves as well as the jump times and values being modified at each SMC step. Hence, this gives the path a chance to have another modification move or another jump times and values to be modified. As such, the likelihood ratio of this specific particle will possibly be decreased, giving other particles from the SMC step an opportunity to be chosen at each sweep. Therefore, such a rejuvenation step will help the particle Gibbs scheme to escape from the stuck path, hence improving the mixing of the chain. 
-
+\section{Numerical Examples}
+\subsection{Generic Setup}
+In this section, we are going to show the correctness of the BlockVRPF sampler within particle Gibbs through two challenging problems - the \textit{elementary change-point model} and the \textit{short-noise Cox model}. As a comparison, we also ran the particle Gibbs with VRPF sampler and for each method, we also perform the backward simulation step described in section \ref{Section-BackwardSimulation}. In the particle Gibbs sampler, static parameters \(\theta\) are updated through a Metropolis within particle Gibbs (MwPG) step with new parameters set being proposed through a centered multivariate Gaussian kernel using an appropriately chosen covariance matrix that reflects the structure of the joint posterior density of \(\theta\). We ran a pilot particle Gibbs sampler following the adaptive tunning strategies of \cite{andrieu2008tutorial} to obtain the suitable scale factor $\lambda$ and covariance matrix \(\Sigma\) for the proposals. Hence, in both examples, proposal parameter sets \(\theta'\) are sampled from \(\mathcal{N}(\theta,\lambda^2\Sigma)\) where \(\theta\) is the previous paramter state. In the actual particle Gibbs sampler, given a PDMP obtained from the cSMC algorithm, we run the MH algorithm for 500 times for faster mixing of the particle Gibbs sampler. 
+\subsection{Elementary Change Point Model}
 \newpage
 \bibliographystyle{icml2020}
 \bibliography{reference}
