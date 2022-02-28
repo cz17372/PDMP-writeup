@@ -29,6 +29,7 @@ right = 20mm
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}{Proposition}
 \usepackage{nccmath}
 \geometry{
 left = 20mm,
@@ -186,98 +187,6 @@ $$X_{1:n}^i = \left(X_{1:n-1}^{A_{n-1}^i},X_n^i\right)=\left(X_1^{B_{1|n}^i},...
 SMC method is sometimes also referred as Sequential Importance Resampling method. Since resampling will introduce extra variance to the estimation of $\pi_{n}(dx_{1:n})$ as shown by \cite{chopin2004central}, it is generally preferable to use \eqref{Standard SMC - IS target approx} to approximate $\pi_n(dx_{1:n})$ instead of using the equally weighted resampled particles. However, by inserting a resampling step, we can get rid of the particles of pretty low weights and focus our computation on regions with high probability density. 
 
 The SMC method solves the problem of weight degeneracy. However, it still suffers from path degeneracy problem. When $n$ increases, the new particles sampled will eventually share the same ancestor.
-\subsection{Block SMC samplers}
-Suppose that we have already obtained $\left\{W_{n-1}^i,X_{1:n-1}^i\right\}_{i = 1,...,N}$ at step $n-1$. Under BSMC sampling scheme, we propose not only $X_n^i$ but also $X_{n-L:n-1}^i$ for some $L>1$ according to a proposing density $K_n^{\theta}(\cdot|x_{1:n-1})$. Hence, $K_n^{\theta}(x_{n-L:n}^{'}|x_{1:n-1})$ will be the density of the proposed path at step $n$ if the path at step $n-1$ is $x_{1:n-1}$. $X_{1:n}$ will then be obtained by discarding $X_{n-L:n-1}$ from $X_{1:n-1}$ and adding $X_{n-L:n}^{'}$ to it, i.e. 
-\begin{equation}\label{eqn:BlockSMC Propogate}
-    X_{1:n}:= (X_{1:n-L-1},X_{n-L:n}^{'})
-\end{equation}
-If we define $p_{n-1}(x_{1:n-1})$ to be the proposed density of the path $X_{1:n-1}$ at step $n$, then $p_n(x_{1:n})$ can then be obtained by,
-\begin{equation*}
-    \begin{split}
-        p_n(x_{1:n}) &= \int p_n(x_{1:n-1},x_{n-L:n}') dx_{n-L:n-1}\\
-        &= \int p_{n-1}(x_{1:n-1}) K_n^{\theta}(x_{n-L:n}'|x_{1:n-1}) dx_{n-L:n-1}
-    \end{split}
-\end{equation*}
-Therefore, when the path is propagated from $X_{1:n-1}$ to $X_{1:n}$, importance weight will become
-\begin{equation*}
-    \begin{split}
-        W_n^i &\propto \frac{\gamma_n^{\theta}(x_{1:n})}{p_n(x_{1:n})}\\
-        &= \frac{\gamma_n^{\theta}(x_{1:n})}{\int p_{n-1}(x_{1:n-1}) K_n^{\theta}(x_{n-L:n}'|x_{1:n-1}) dx_{n-L:n-1}}
-    \end{split}
-\end{equation*}
-We can see that the calculation of importance weights at step $n$ involves an integral, which is, in most cases, impossible to be evaluated pointwise. As Doucet et al. (2006) pointed out, even though it is possible calculate the integral exactly, the form of the importance weights will be no longer as simple as what we have in Algorithm 1 and Algorithm 2. 
-\newline
-\newline
-To deal with this problem, we can instead target a density defined on an extended space. Define $X_n(j)$ to be the $j$th time $X_n$ is sampled. To simplify the notations at later stage, we also define $Z_n$ to be the variable(s) sampled at step $n$. Hence,
-\begin{equation*}
-    Z_n := \begin{cases}
-    \left(X_n(1),X_{n-1}(2),...,X_2(n-1),X_1(n)\right),& \textnormal{for}\ 1 \leq n \leq L \\
-    \left(X_n(1),X_{n-1}(2),...,X_{n-L+1}(L),X_{n-L}(L+1)\right),& \textnormal{for}\ n \geq L+1
-    \end{cases}
-\end{equation*}
-This allows us to transform between the $X$'s and $Z$'s by Equation \eqref{eqn:ZtoX}
-\begin{align}
-    \label{eqn:ZtoX}
-    Z_{n,k} &:= X_{n-k+1}(k)\\
-    X_n(j)  &:= Z_{n+j-1,j}
-\end{align}
-Where $Z_{n,k}$ represents the $k$th element in $Z_n$. Based on the previous discussion, the importance distribution of all these variables will be 
-\begin{equation*}
-    \begin{split}
-        p_n(z_{1:n}) &= K_1^{\theta}(z_1)\prod_{l=2}^n K_l^{\theta}(z_l|z_{1:l-1})\\
-        &=K_1^{\theta}(x_1(1))\prod_{l=2}^L K_l^{\theta}(x_1(l),...,x_l(1)|x_{1:l-1})\prod_{l=L+1}^n K_l^{\theta}(x_{l-L}(L+1),...,x_l(1)|x_{1:l-1})
-    \end{split}
-\end{equation*}
-where the conditional path $x_{1:l-1}$ is propagated and obtained by \eqref{eqn:BlockSMC Propogate}. To be compatible with the importance density, the extended target should also include all the variables up to step $n$. To achieve this, we define
-\begin{equation}
-\label{eqn:BlockSMC_ExtendedTarget}
-    \begin{split}
-        \Tilde{\pi}_n^{\theta}(z_{1:n}) \propto \Tilde{\gamma}_n(z_{1:n}) :=& \gamma_n^{\theta}(x_1(L+1),...,x_{n-L}(L+1),x_{n-L+1}(L),...,x_n(1))\times\\
-        &\prod_{l=2}^n \lambda_l^{\theta}(x_{n-L}(L),x_{n-L+1}(L-1),...,x_{n-1}(1)|x_{1:n})
-    \end{split}
-\end{equation}
-Moreover, the extended target density incorporates the actual target as a marginal. Also, by targeting this extended density, we can get rid of the integral appeared in the previous set up and now the importance weight will become 
-\begin{equation}
-\label{eqn:BSMC_IncrementalWeight}
-    \begin{split}
-        W_n &\propto \frac{\Tilde{\gamma}^{\theta}_n(z_{1:n})}{p_n(z_{1:n})} = \frac{\Tilde{\gamma}^{\theta}_n(z_{1:n})p_{n-1}(z_{1:n-1})}{\Tilde{\gamma}^{\theta}_{n-1}(z_{1:n-1})p_n(z_{1:n})}\times \frac{\Tilde{\gamma}^{\theta}_{n-1}(z_{1:n-1})}{p_{n-1}(z_{1:n-1})}\\\\
-        &=W_{n-1}\underbrace{\frac{\gamma_n^{\theta}(x_{1:n-L}(L+1),x_{n-L+1}(L),...,x_n(1))\lambda_n(x_{n-L}(L),...,x_{n-1}(1)|x_{1:n})}{\gamma_{n-1}^{\theta}(x_{1:n-L-1}(L+1),x_{n-L}(L),...,x_{n-1}(1))K_n^{\theta}(x_{n-L}(L+1),...,x_{n}(1)|x_{1:n-1})}}_\text{$G_n^{\theta}(z_{1:n})$}
-    \end{split}
-\end{equation}
-If resampling steps are also included in this scheme, the weights at step $n$ will then be equal to the incremental weights only. Details of the Block SMC method will be listed in \textbf{Algorithm 3}.  
-\\\\
-\begin{algorithm}
-    \caption{Block SMC}
-    \For{$n=1$}{
-        Sample \(X_1^i(1) \sim K_1^{\theta}(dx_1)\)\;
-        Set \(Z_1^i := X_1^i(1)\)\;
-        Calculate and normalise the weights 
-        \[
-          W_1^i \propto \frac{\tilde{\gamma}_1^{\theta}(z_1^i)}{K_1^{\theta}(z_1^i)}  
-        \] \\
-    
-    }
-\end{algorithm}
-\textbf{Algorithm 3}(Block SMC)
-\begin{enumerate}
-    \item For $n=1$,
-    \begin{itemize}
-        \item Sample $X_1^i(1) \sim K_1^{\theta}(\cdot)$
-        \item Set $Z_1^i := X_1^i(1)$
-        \item Calculate and normalise the weights
-        $$W_1^i \propto \frac{\Tilde{\gamma}_1^{\theta}(z_1^i)}{K_1^{\theta}(z_1^i)}$$
-    \end{itemize}
-    \item For $n = 2,3,..$
-    \begin{itemize}
-        \item Sample $\mathbf{A_{n-1}} \sim \mathbf{r_{n-1}}(\cdot|\mathbf{W_{n-1}})$
-        \item Sample $Z_{n}^i:=(X_n(1),...,X_1(n)) \sim K_n^{\theta}(\cdot|Z_{1:n-1}^{A_{n-1}^i})$
-        \item Set $Z_{1:n}^i := \left(Z_{1:n-1}^{A_{n-1}^i},Z_n^i\right)$
-        \item Calculate and normalise the weights 
-        $$W_n^i \propto G_n^{\theta}(z_{1:n}^i)$$
-        where $G_n^{\theta}(z_{1:n}^i)$ is defined in \eqref{eqn:BSMC_IncrementalWeight}
-        
-    \end{itemize}
-\end{enumerate}
 \section{SMC filter for piecewise deterministic processes}
 \subsection{Variable rate particle filter (VRPF)}
 In this section, we describe the SMC filter for PDPs. We first introduce the particle filter named \textit{variable rate particle filter} (VRPF) proposed by \cite{godsill2005variable}. This is actually a standard SMC algorithm on PDPs with a reparameterised presentation of the PDPs.\\
@@ -338,11 +247,9 @@ where
 \end{split}
 \end{equation*}
 
-The VRPF method is detailed in Algorithm \ref{Alg:VRPF}. As shown in Whiteley et al. (2011), the VRPF will suffer from severe path degeneracy. This is because the jump times can be only sampled in the interval $(t_{n-1},t_n]$ at the $n$-th SMC step. Therefore, if subsequent observations high suggest a jump in the interval $(t_{n-1},t_n]$, then this can only be recovered through resampling.
-
-To combat against this weakness, out idea is to incorporate a block sampling step at each SMC step so that the jump times and their associated jump values in the interval $(t_{n-1},t_n]$ can be revised and modified at the $n$-th SMC step. This results in a modified VRPF algorithm, called the Block variable rate particle filter. We will refer this as \textit{Block-VRPF} in later sections. 
+The VRPF method is detailed in Algorithm \ref{Alg:VRPF}. The VRPF method has a potential problem due to the discretisation of the continuous time PDMP. If a jump occurs close to the end of a time block, say \((t_{n-1},t_n]\), the VRPF method would be likely to miss it since the observations in the block \((t_{n-1},t_n]\) would provide little information about such a jump. Even when such jump is samlped, the corresponding sampled jump value would be likely to be inaccurate as well since the information that can be used to is minimal. Moreover, the inaccuracy caused by this problem cannot be corrected by any of the smoothing methods either. Realising this problem inspires us to propose modifications on the VRPF method, which is based on the block sampling techniques introduced by \cite{doucet2006efficient}. In the next section, we will give an introduction to the block sampling technique as well as the modifications we made on top of the VRPF method. 
 \begin{algorithm}
-    \caption{Variable Rate Particle Filter (VRPF)}
+    \caption{Variable Rate Particle Filter (VRPF)}\label{Alg:VRPF}
     \For{n=1}{
         \For{$i=1,2,...,N$}{
             Sample $X_1^{i}:=\left(k_1^i,\tau_{1,1:k_1^i}^i,\phi_{1,1:k_1^i}^i,\phi_0^i\right) \sim K_1(\cdot)$\;
@@ -373,47 +280,167 @@ To combat against this weakness, out idea is to incorporate a block sampling ste
             $$ W_n^i \propto G_n(X_{1:n}^i),\quad \sum_{i=1}^{N} W_n^i = 1$$
         }
     }
-    \label{Alg:VRPF}
 \end{algorithm}
-    
+
+\section{Block Sampling Strategies and BlockVRPF Sampler}
+As discussed at the end of the previous section, the VRPF sampler may suffer from several problems, making estimations of jumps near the time interval breakpoints inaccurate. However, these problems can be alleviated by looking back at the previously sampled jumps as we collect more information and make modifications in light of the newcoming observations. This inspires us to incorporate the block sampling strategy to perform such modifications. In this section, we are going to first introduce the block sampling strategy of \cite{doucet2006efficient}. We will then describe the modifications we made on the VRPF to tackle the aforementioned limitations. 
+\subsection{Block SMC samplers}
+Suppose that we have already obtained $\left\{W_{n-1}^i,X_{1:n-1}^i\right\}_{i = 1,...,N}$ at step $n-1$. Under the standard SMC scheme, only \(\left\{X_n^{i}\right\}_{i=1,..,N}\) are sampled at step \(n\) and the paths \(X_{1:n}^i\) are constructed by concatenating \(X_n^i\) with \(X_{1:n-1}^i\) to approximate \(\pi_n(x_{1:n})\). However, \(\pi_n(x_{1:n})\) and \(\pi_{n-1}(x_{1:n-1})\) may have a large discrepency. As a consequence, the sampled paths \(X_{1:n-1}^i\) may not be in the region of high density under \(\pi_n(x_{1:n})\). The block sampling strategy, on the other hand, potentially provides a ways of alleviating such limitation of standard SMC scheme. Instead only sampling \(X_n^i\)'s at step \(n\), part of the previous paths are also sampled in light of \(\pi_n(x_{1:n})\). Suppose that $X_{n-L:n}^{',i}$ for some \(L>1\) are sampled at step \(n\) according to a proposal density $K_n(dx_{n-L:n}^{'}|x_{1:n-1})$, the paths at step \(n\), $X_{1:n}$ will then be obtained by discarding $X_{n-L:n-1}$ from $X_{1:n-1}$ and adding $X_{n-L:n}^{'}$ to it, i.e. 
+\begin{equation}\label{eqn:BlockSMC Propogate}
+    X_{1:n}:= (X_{1:n-L-1},X_{n-L:n}^{'})
+\end{equation}
+If we define $\mathcal{Q}_{n}(x_{1:n})$ to be the proposed density of the path $X_{1:n}$ at step $n$, then $\mathcal{Q}_n(x_{1:n})$ is given by
+\begin{equation*}
+    \begin{split}
+        \mathcal{Q}_n(x_{1:n}) &= \int \mathcal{Q}_n(x_{1:n-1},x_{n-L:n}') dx_{n-L:n-1}\\
+        &= \int \mathcal{Q}_{n-1}(x_{1:n-1}) K_n(x_{n-L:n}'|x_{1:n-1}) dx_{n-L:n-1}
+    \end{split}
+\end{equation*}
+Therefore, when the path is propagated from $X_{1:n-1}$ to $X_{1:n}$, importance weight will become
+\begin{equation*}
+    W_n^i \propto \frac{\gamma_n(x_{1:n})}{p_n(x_{1:n})} = \frac{\gamma_n(x_{1:n})}{\int p_{n-1}(x_{1:n-1}) K_n(x_{n-L:n}'|x_{1:n-1}) dx_{n-L:n-1}}
+\end{equation*}
+
+We can see that the calculation of the importance weights at step $n$ involves an integral, which is, in most cases, impossible to be evaluated pointwise. As \cite{doucet2006efficient} pointed out, even though it is possible calculate the integral exactly, the form of the importance weights will be no longer as simple as what we have in Algorithm 1 and Algorithm 2. 
+
+To deal with this problem, we can instead target a density defined on an extended space by using the auxiliary trick. Define $X_n(j)$ to be the $j$th time $X_n$ is sampled. To simplify the notations at later stage, we also define $Z_n$ to be the variable(s) sampled at step $n$. Hence,
+\begin{equation*}
+    Z_n := \begin{cases}
+    \left(X_n(1),X_{n-1}(2),...,X_2(n-1),X_1(n)\right),& \textnormal{for}\ 1 \leq n \leq L \\
+    \left(X_n(1),X_{n-1}(2),...,X_{n-L+1}(L),X_{n-L}(L+1)\right),& \textnormal{for}\ n \geq L+1
+    \end{cases}
+\end{equation*}
+This allows us to transform between the $X$'s and $Z$'s by Equation \eqref{eqn:ZtoX}
+\begin{equation}
+    \label{eqn:ZtoX}
+    Z_{n,k} := X_{n-k+1}(k) \quad\quad\quad\quad X_n(j):= Z_{n+j-1,j}
+\end{equation}
+where $Z_{n,k}$ represents the $k$th element in $Z_n$. Based on the previous discussion, the proposal distribution of all these variables will be 
+\begin{equation*}
+    \begin{split}
+        \mathcal{Q}_n(z_{1:n}) &= K_1(z_1)\prod_{t=2}^n K_t(z_t|z_{1:t-1})\\
+        &=K_1(x_1(1))\prod_{t=2}^L K_t(x_1(t),...,x_t(1)|z_{1:t-1})\prod_{t=L+1}^n K_t(x_{t-L}(L+1),...,x_t(1)|z_{1:t-1})
+    \end{split}
+\end{equation*}
+where the conditional path $x_{1:l-1}$ is propagated and obtained by \eqref{eqn:BlockSMC Propogate}. To be compatible with the importance density, the extended target should also include all the variables up to step $n$. Hence, when \(n>L\), we have that 
+\begin{multline}
+    \label{eqn:BlockSMC_ExtendedTarget2}
+    \Tilde{\pi}_n(z_{1:n}) \propto \Tilde{\gamma}_n(z_{1:n}) := \gamma_n(x_1(L+1),...,x_{n-L}(L+1),x_{n-L+1}(L),...,x_n(1))\times\\
+    \prod_{t=2}^L \lambda_t(x_{1}(t-1),x_{2}(t-2),...,x_{t-1}(1)|z_{1:t})\prod_{t=L+1}^{n}\lambda_t(x_{t-L}(L),x_{t-L+1}(L-1),...,x_{t-1}(1)|z_{1:t})
+\end{multline}
+where \(\lambda_l\)'s are auxiliary conditional densities of the replaced variables at step \(l\). When \(n \leq L\), the corresponding extended target has similar definition and is given by 
+\begin{multline}
+    \label{eqn:BlockSMC_ExtendedTarget1}
+    \Tilde{\pi}_n(z_{1:n}) \propto \Tilde{\gamma}_n(z_{1:n}) := \gamma_n(x_1(n),x_2(n-1),...,x_{n-1}(2),x_{n}(1))\times\\
+    \prod_{t=2}^n \lambda_t(x_{1}(t-1),x_{2}(t-2),...,x_{t-1}(1)|x_{1:t})
+\end{multline}
+Moreover, the extended target density incorporates the actual target as a marginal. One can see that by targeting the extended density defined in \eqref{eqn:BlockSMC_ExtendedTarget2} and \eqref{eqn:BlockSMC_ExtendedTarget1}, we can get rid of the integral appearing in the previous set up and the importance weight will become 
+\begin{equation*}
+W_n \propto \frac{\Tilde{\gamma}_n(z_{1:n})}{\mathcal{Q}_n(z_{1:n})} = \frac{\Tilde{\gamma}_n(z_{1:n})\mathcal{Q}_{n-1}(z_{1:n-1})}{\Tilde{\gamma}_{n-1}(z_{1:n-1})\mathcal{Q}_n(z_{1:n})}\times \frac{\Tilde{\gamma}_{n-1}(z_{1:n-1})}{\mathcal{Q}_{n-1}(z_{1:n-1})}=w_{n-1}\frac{\Tilde{\gamma}_n(z_{1:n})\mathcal{Q}_{n-1}(z_{1:n-1})}{\Tilde{\gamma}_{n-1}(z_{1:n-1})\mathcal{Q}_n(z_{1:n})}
+\end{equation*}
+Hence, the incremental weight for the SMC with block sampling strategy is then given by 
+\begin{equation}
+    \label{eqn:BlockSMC_Incrementalweight}
+    \mathcal{G}_n(z_{1:n}) := \frac{\Tilde{\gamma}_n(z_{1:n})\mathcal{Q}_{n-1}(z_{1:n-1})}{\Tilde{\gamma}_{n-1}(z_{1:n-1})\mathcal{Q}_n(z_{1:n})} = \frac{\Tilde{\gamma}_n(z_{1:n})}{\Tilde{\gamma}_{n-1}(z_{1:n-1})K_n(z_n|z_{1:n-1})}
+\end{equation}
+When \(n > L\), the incremental weight will be given by 
+\begin{multline}
+    \label{eqn:BlockSMC_G2}
+    \mathcal{G}_n(z_{1:n}) = \frac{\gamma_n(x_{1:n-L}(L+1),x_{n-L+1}(L),..,x_{n-1}(2),x_n(1))}{\gamma_{n-1}(x_{1:n-L-1}(L+1),x_{n-L}(L),..,x_{n-2}(2),x_{n-1}(1))} \\\\
+    \times \frac{\lambda_n(x_{n-1}(1),...,x_{n-L}(L)|x_{1:n-L}(L+1),x_{n-L+1}(L),..,x_{n-1}(2),x_n(1))}{K_n(x_{n}(1),..,x_{n-L}(L+1)|x_{1:n-L-1}(L+1),x_{n-L}(L),..,x_{n-2}(2),x_{n-1}(1))}
+\end{multline}
+When \(n \leq L\), the corresponding incremental weight will be given by 
+\begin{multline}
+    \label{eqn:BlockSMC_G1}
+    \mathcal{G}_n(z_{1:n}) := \frac{\gamma_n(x_1(n),x_2(n-1),..,x_{n-1}(2),x_n(1))}{\gamma_{n-1}(x_1(n-1),x_2(n-2),..x_{n-1}(1))}\times \\\\
+    \frac{\lambda_n(x_1(n-1),..,x_{n-1}(1)|x_1(n),x_2(n-1),..,x_{n-1}(2),x_n(1))}{K_n(x_n(1),...,x_{1}(n)|x_1(n-1),x_2(n-2),..x_{n-1}(1))}
+\end{multline}
+
+\begin{algorithm}[htb!]
+    \caption{SMC with Block Sampling} \label{Block SMC}
+    \For{$n=1$}{
+        \For{\(i=1,2,..,N\)}{
+            Sample \(X_1^i(1) \sim K_1(dx_1)\)\;
+            Set \(Z_1^i := X_1^i(1)\)\;
+            Calculate and normalise the weights 
+            \[
+            W_1^i \propto \frac{\gamma_1(x_1^i(1))}{K_1(x_1^i(1))}  
+            \] \\
+        }
+        \For{\(n=2,..,L\)}{
+            Sample \(\mathbf{A}_{n-1} \sim r_{n-1}(\mathbf{W}_{n-1})\)\;
+            \For{\(i=1,..,N\)}{
+                Sample \(Z_n^i:=(X_n^i(1),..,X_1^i(n)) \sim K_n(dz_n|Z_{1:n-1}^{A_{n-1}^i})\)\;
+                Set \(Z_{1:n}^i := (Z_{1:n-1}^{A_{n-1}^i},Z_n^i)\)\;
+                Calculate and normalise the weights \(W_n^i\) according to \eqref{eqn:BlockSMC_G1}\;
+            }
+        }
+        \For{\(n=L+1,..,P\)}{
+            Sample \(\mathbf{A}_{n-1} \sim r_{n-1}(\mathbf{W}_{n-1})\)\;
+            \For{\(i=1,..N\)}{
+                Sample \(Z_n^i := (X_n^i(1),..X_{n-L}^i(L+1)) \sim K_n(dz_n|Z_{1:n-1}^{A_{n-1}^i})\)\;
+                Set \(Z_{1:n}^i := (Z_{1:n-1}^{A_{n-1}^i},Z_n^i)\)\;
+                Calculate and normalise the weights \(W_n^i\) according to \eqref{eqn:BlockSMC_G2}\;
+            }
+        }
+    }
+\end{algorithm}
+If the resampling steps are also included in this scheme, the weights at step $n$ will then be equal to the incremental weights only. Details of the Block SMC method are given in Algorithm \ref{Block SMC}. It is also clear that the performance of the Block SMC method will depend on the choices of the artificial conditional densities \(\{\lambda_n\}\) and the proposal densities \(\{K_n\}\). To have optimal performance, these should be chosen to minimise the variance of the incremental weights defined in \eqref{eqn:BlockSMC_G2} and \eqref{eqn:BlockSMC_G1}. \cite{doucet2006efficient} derived the following two propositions that provide us guides on how to chose these densities. 
+\begin{proposition}\label{optimal lambda}
+    When \(n>L\), the optimal conditional distribution \[\lambda_n(x_{n-1}(1),...,x_{n-L}(L)|x_{1:n-L}(L+1),x_{n-L+1}(L),..,x_{n-1}(2),x_n(1))\] that minimizes the variance of the incremental weight defined in \eqref{eqn:BlockSMC_G2} is given by
+    \begin{equation}
+        \label{eqn:BlockSMC_optimallambda}
+        \lambda_n^{opt}(x_{n-L:n-1}|x_{1:n-L-1},x_{n-L:n}^{'}) = \frac{\gamma_{n-1}(x_{1:n-1})K_n(x_{n-L:n}^{'}|x_{1:n-1})}{\int \gamma_{n-1}(x_{1:n-1})K_n(x_{n-L:n}^{'}|x_{1:n-1})\,dx_{n-L:n-1}}
+    \end{equation}
+    where we use represent \((x_{1:n-L-1}(L+1),x_{n-L}(L),..,x_{n-2}(2),x_{n-1}(1)))\) and \((x_{n}(1),x_{n-1}(2),...,x_{n-L}(L+1))\) as \(x_{1:n-1}\) and \(x_{n-L:n}^{'}\) respectively for the ease of presentation. The optimal conditional distribution that minimizes the incremental weight of \eqref{eqn:BlockSMC_G1} will be given in similar form. 
+\end{proposition}
+\begin{proposition}
+    Given that the optimal artificial conditional distribution \(\{\lambda_n^{opt}\}\) is chosen. The corresponding optimal proposal distribution is given by 
+    \begin{equation}
+        \label{eqn:BlockSMC_OptimalK} 
+        K_n^{opt}(x_{n-L:n}'|x_{1:n-1}) = \pi_n(x_{n-L:n}'|x_{1:n-L-1})
+    \end{equation}
+    where \(x_{1:n-1}\) and \(x_{n-L:n}'\) have the same definition as in \textit{proposition} \ref{optimal lambda}
+\end{proposition}
+One can see that an integral is involved in the optimal choice \(\{\lambda_n^{opt}\}\) and it is generally not tractable. Hence, one would need to choose \(\lambda_n\) that approximates \eqref{eqn:BlockSMC_optimallambda}. Moreover, the optimal proposal distribution defined in \eqref{eqn:BlockSMC_OptimalK} also suggests that \(x_{n-L:n-1}\) should be resampled in light of \(\pi_n\). In fact, as \cite{doucet2006efficient} pointed out, the choice of \(\{\lambda_n\}\) and \(\{K_n\}\) is quite crucial to the performance of the block sampling strategy. If they are not chosen appropriately, block sampling strategy may not always outperform the standard SMC sampler. 
 \subsection{Block Variable Rate Particle Filter (Block-VRPF)}
-To fight for the path degeneracy of VRPF, Block-VRPF makes modifications of the jump times and their associated jump values in the previous interval at each time. At the $n$-th SMC step, in addition to sample jump times and values in the interval $(t_{n-1},t_n]$, represented by $X_n$, jumps in the interval $(t_{n-2},t_{n-1}]$, represented by $X_{n-1}$, will also be modified. We follow \cite{whiteley2011monte} to propose two types of modifications on $X_{n-1}$ - a 'birth' move and an 'adjust' move:
+As discussed before, we want to make modifications on the jumps sampled in the previous time block before the jumps in the current time block are sampled. The block sampling strategy is therefore a suitable choice of doing this. Instead of resampling all the jumps in the previous block, however, we propose to only modify the jumps that are already sampled. Hence, at the $n$-th SMC step, in addition to sampling jump times and values in the interval $(t_{n-1},t_n]$, represented by $X_n(1)$, jumps already sampled in the interval $(t_{n-2},t_{n-1}]$, represented by $X_{n-1}(1)$, will also be modified. We follow \cite{whiteley2011monte} to propose two types of modifications on $X_{n-1}(1)$ - a \textit{birth} move and an \textit{adjustment} move:
 \begin{enumerate}
-    \item If a 'birth' is proposed, a new jump time will be sampled in the interval $(\tau_{n-1,k_{n-1}}\vee t_{n-2},t_{n-1}]$ together with its jump value. Here, $a \vee b$ represents the greater of $a$ and $b$. 
-    \item If an 'adjust' is proposed, the last jump time in $X_{n-1}$ and its associated jump value, $\left(\tau_{n-1,k_{n-1}},\phi_{n-1,k_{n-1}}\right)$, will be discarded and a new jump time and its jump value will be proposed in the interval $(\tau_{n-1,k_{n-1}-1} \vee t_{n-2},t_{n-1}]$. In addition, if $X_{n-1}$ contains zero jump, the 'adjust' will keep $X_{n-1}$ unchanged. 
+    \item If a \textit{birth} is proposed, a new jump time will be sampled in the interval $(\tau_{n-1,k_{n-1}}\vee t_{n-2},t_{n-1}]$ together with its jump value. Here, $a \vee b$ represents the maximum of $a$ and $b$. 
+    \item If an \textit{adjustment} is proposed, the last jump time in $X_{n-1}(1)$ and its associated jump value, $\left(\tau_{n-1,k_{n-1}},\phi_{n-1,k_{n-1}}\right)$, will be discarded and a new jump time and its jump value will be proposed in the interval $(\tau_{n-1,k_{n-1}-1} \vee t_{n-2},t_{n-1}]$. In addition, if $X_{n-1}(1)$ contains zero jump, the \textit{adjustment} will keep $X_{n-1}(1)$ unchanged. 
 \end{enumerate}
 
-Note that the modifications are not constrained to those we discussed above. Other modification proposals and even modifications on more jumps are also possible. See later section for the discussion of a more general set-up. For now, our method is constrained to these two modifications only. 
+Note that the modifications are not constrained to those proposed above. Other modification proposals and even modifications on more jumps are also possible. One can even modify more than one previous block, as discussed in the previous section. For the ease of representation, we will constrain ourselves to the \textit{birth} and \textit{adjustment} moves only for the moment. Moreover, When the time block is large enough to be likely to contain at least one jump, it is enough to only modify the jumps in the last block since modifying the last jump is what we are interested. Hence, we also limit our presentation to the resampling of one block only. 
 
-Let $U_{n-1} := \left(\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$ be the modified jump time and its associated value of the last jump in the interval $(t_{n-2},t_{n-1}]$ with the convention that $U_{n-1} := \emptyset$ if $K_{n-1} = 0$. Also, let $M_{n-1} \in \left\{0,1\right\}$ be the indicator of modification made on $X_{n-1}$ with $0$ representing an 'adjust' and $1$ representing a 'birth'. Moreover, we use $\bar{X}_{n-1}:=\left(\bar{k}_{n-1},\bar{\tau}_{n-1,1:\bar{k}_{n-1}},\bar{\phi}_{n-1,1:\bar{k}_{n-1}}\right)$ to represent $X_{n-1}$ after modification, where $\bar{K}_{n-1}$ the number of jumps contained in the $\bar{X}_{n-1}$. 
+Let $u_{n-1} := \left(\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$ be the modified jump time and its associated value of the last jump in the interval $(t_{n-2},t_{n-1}]$ with the convention that $U_{n-1} := \emptyset$ if $k_{n-1} = 0$. Also, let $M_{n-1} \in \left\{0,1\right\}$ be the indicator of modification made on $X_{n-1}(1)$ with $0$ representing an \textit{adjustment} and $1$ representing a \textit{birth}. Following the notation of block sampling strategies, we use $X_{n-1}(2):=\left(\bar{k}_{n-1},\bar{\tau}_{n-1,1:\bar{k}_{n-1}},\bar{\phi}_{n-1,1:\bar{k}_{n-1}}\right)$ to represent $X_{n-1}(1)$ after modification, where $\bar{k}_{n-1}$ the number of jumps contained in the $X_{n-1}(2)$. 
 
 %------------------------------ Definition of Modified States -------------------------------------------%
 Therefore, it is clear to see that, according to the modifications we are proposing, 
 \begin{subequations}
 \begin{align}
     \label{def:Modified Birth States}
-    \bar{X}_{n-1} := \left(k_{n-1}+1,\tau_{n-1,1:k_{n-1}},\mathring{\tau}_{n-1},\phi_{n-1,1:k_{n-1}},\mathring{\phi}_{n-1}\right)
+    X_{n-1}(2) := \left(k_{n-1}+1,\tau_{n-1,1:k_{n-1}},\mathring{\tau}_{n-1},\phi_{n-1,1:k_{n-1}},\mathring{\phi}_{n-1}\right)
 \end{align}
-when $M_{n-1} = 1$. When $M_n = 0$, i.e. an 'adjust' is proposed, the modified $X_n$ will be given by 
+when $M_{n-1} = 1$. When $M_n = 0$, i.e. an \textit{adjustment} is proposed, the modified $X_n(1)$ will be given by 
 \begin{align}
     \label{def:Modified Adjust States}
-    \bar{X}_{n-1} := \left(k_{n-1},\tau_{n-1,1:k_{n-1}-1},\mathring{\tau}_{n-1},\phi_{n-1,1:k_{n-1}-1},\mathring{\phi}_{n-1}\right)
+    X_{n-1}(2) := \left(k_{n-1},\tau_{n-1,1:k_{n-1}-1},\mathring{\tau}_{n-1},\phi_{n-1,1:k_{n-1}-1},\mathring{\phi}_{n-1}\right)
 \end{align}
 \end{subequations}
-If the number of jump times in $X_{n-1}$ is $0$, $\bar{X}_{n-1} = X_{n-1}$. We treat this as a special case of Equation \eqref{def:Modified Adjust States}. 
+If the number of jump times in $X_{n-1}(1)$ is $0$, $X_{n-1}(2) = X_{n-1}(1)$. We treat this as a special case of Equation \eqref{def:Modified Adjust States}. 
 
 %--------------------------------------------------------------------------------------------------------%
 
-After the state, $X_{n-1}$ is modified, the jump times and jump values in the interval $(t_{n-1},t_n]$ will be sampled conditioned on the modified PDP. Hence, \textit{Block-VRPF} actually samples $\left(M_{n-1},U_{n-1},X_n\right)$ at the $n$-th SMC step for $n >1$ and they should be the actual 'states' we are considering. To ease the notation, we define  
+After the state $X_{n-1}(1)$ is modified, the jump times and jump values in the interval $(t_{n-1},t_n]$ will be sampled conditional on the modified PDP. Hence, \textit{Block-VRPF} actually samples $\left(M_{n-1},U_{n-1},X_n(1)\right)$ at the $n$-th SMC step for $n >1$, and they should be the actual 'states' we are considering. To ease the notation, we define  
 
 \begin{subequations}
 \begin{align}
 \label{def: Block VRPF States}
-&Z_1 := X_1 \\
-&Z_n := \left(M_{n-1},U_{n-1},X_n\right)
+&Z_1 := X_1(1) \\
+&Z_n := \left(M_{n-1},U_{n-1},X_n(1)\right)
 \end{align}
 \end{subequations}
-to be the 'states' at the $n$-th SMC step. Thses 'states' will take values in the subsets of 
+to be the 'states' at the $n$-th SMC step. These 'states' will take values in the subsets of 
 \begin{subequations}
 \begin{align}
     \label{def:Support for Block-VRPF States 1}
@@ -423,12 +450,12 @@ and
 \begin{equation}
     \label{def:Support for Block-VRPF States 2}
     \begin{split}
-    E_n := &\left[\left(\{a\} \times T^{M}_{(\tau_{n-1,k_{n-1}-1} \vee t_{n-2},t_{n-1}]} \times\Phi\right)\bigcup\left(\{b\} \times T^{M}_{(\tau_{n-1,k_{n-1}} \vee t_{n-2},t_{n-1}]} \times \Phi \right) \right]\\
+    E_n := &\left[\left(\{0\} \times T^{M}_{(\tau_{n-1,k_{n-1}-1} \vee t_{n-2},t_{n-1}]} \times\Phi\right)\bigcup\left(\{1\} \times T^{M}_{(\tau_{n-1,k_{n-1}} \vee t_{n-2},t_{n-1}]} \times \Phi \right) \right]\\
     & \times \bigcup_{k_n=0}^{\infty}\left(\{k_n\}\times T_{(0,t_n],k_n} \times \Phi^{k_n}\right)
     \end{split}
 \end{equation}
 \end{subequations}
-where $T_{(s,t]}^{M} := \left\{\tau | \tau \in (s,t]\right\}$. Moreover, denote $\bar{U}_{n-1}$ be the jump time and value in the interval $(t_{n-1},t_n]$ that are modified at the $n$-th SMC step. According to the modifications we defined above, $\bar{U}_{n-1} := \left(\tau_{n-1,k_{n-1}},\phi_{n-1,k_{n-1}}\right)$ when $M_{n-1} = 0$ with the convention that $\left(\tau_{n-1,0},\phi_{n-1,0}\right) := \emptyset$ when $k_{n-1}=0$. In addition, $\bar{U}_{n-1} := \emptyset$ when $M_{n-1}=1$. Then, $\left(\bar{X}_{n-1},M_{n-1},\bar{U}_{n-1}\right)$ and $\left(X_{n-1},M_{n-1},U_{n-1}\right)$ actually represent the same set of random variables. Therefore, if we look at all the 'states' we have sampled up to the $n$-th SMC step, we can see that 
+where $T_{(s,t]}^{M} := \left\{\tau | \tau \in (s,t]\right\}$. Moreover, denote $\bar{U}_{n-1}$ the jump time and value in the interval $(t_{n-1},t_n]$ that are modified at the $n$-th SMC step. According to the modifications we defined above, $\bar{U}_{n-1} := \left(\tau_{n-1,k_{n-1}},\phi_{n-1,k_{n-1}}\right)$ when $M_{n-1} = 0$ with the convention that $\left(\tau_{n-1,0},\phi_{n-1,0}\right) := \emptyset$ when $k_{n-1}=0$. In addition, $\bar{U}_{n-1} := \emptyset$ when $M_{n-1}=1$. Then, $\left(\bar{X}_{n-1},M_{n-1},\bar{U}_{n-1}\right)$ and $\left(X_{n-1},M_{n-1},U_{n-1}\right)$ actually represent the same set of random variables. Therefore, if we look at all the 'states' we have sampled up to the $n$-th SMC step, we can see that 
 \begin{equation}
 \label{eqn:ONE-ONE Transformation}
     \begin{split}
