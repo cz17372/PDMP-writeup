@@ -777,7 +777,7 @@ We discussed the particle Gibbs sampler in the previous section. One of the majo
     \item ......
     \item Sample \(b_{1}^{*} \sim \tilde{\pi}_P^{N}(b_{1}^{*}|\theta^{*},\textbf{x}_{1:P}^{*,-b_{1:P}},\textbf{a}_{1:P-1}^{*,-b_{2:P}},b_{1},x_{1}^{b_{1}},x_{2:P}^{b_{2:P}^{*}},b_{2:P}^{*})\)
 \end{itemize}
-From the above scheme, one can see that the conditional distribution of $b_t^{*}$ is independent of \(\mathbf{x}_{t+1:P}^{-b_{t+1:P}^{*}}\) and \(\mathbf{a}_{t:P-1}^{-b_{t+1:P}^{*}}\). Therefore, by marginalising \(\psi_{P}^{N,\theta}\) over \(\mathbf{x}_{t+1:P}^{-b_{t+1:P}}\) and \(\mathbf{a}_{t:P-1}^{-b_{t+1:P}}\), we obtain 
+Now, we are going to derive the conditional distribution of \(b_t^{*}\) listed above. One can see that the conditional distributions of $b_t^{*}$ is independent of \(\mathbf{x}_{t+1:P}^{-b_{t+1:P}^{*}}\) and \(\mathbf{a}_{t:P-1}^{-b_{t+1:P}^{*}}\). Therefore, by marginalising \(\psi_{P}^{N,\theta}\) over \(\mathbf{x}_{t+1:P}^{-b_{t+1:P}}\) and \(\mathbf{a}_{t:P-1}^{-b_{t+1:P}}\), we obtain 
 \begin{equation}
     \label{PMCMC-Marginal of psi}
     \psi_{P}^{N,\theta}(\mathbf{x}_{1:t}^{-b_{1:t}},\mathbf{a}_{1:t-1}^{-b_{2:t}}|x_{1:P}^{b_{1:P}},b_{1:P}) := \prod_{\substack{j=1\\j \neq b_1}}^{N} K_1\left(x_1^j\right)\prod_{n=2}^t \left\{r\left(\mathbf{a}_{n-1}^{-b_{n}}|\mathbf{W}_{n-1},a_{n-1}^{b_n}\right)\prod_{\substack{j=1\\ j \neq b_n}}^{N} K_n(x_n^j|x_{1:n-1}^{a_{n-1}^j})\right\}
@@ -814,11 +814,9 @@ where the last line is derived in a similar way as we did in \eqref{PMCMC-anothe
 The PGBS sampler generally has much better than the standard particle Gibbs sampler. Due to the addition of the backward sampling step, we would be able to explore all the possible trajectories created by the combinations of particles obtained from the cSMC algorithm. As a result, the new sampled trajectory would be highly likely significantly different from the previous one. This brings a big improvement on the mixing in the state space, hence the particle Gibbs sampler overall. 
 
 For the VRPF method, denote \(\check{\mathcal{J}}_{n}:=(\check{k}_n,\check{\tau}_{n,1:\check{k}_n},\check{\phi}_{n,1:\check{k}_n})\) be the collection of jump times and values that define the PDP in the interval \((t_{n-1},t_P)\), we then should have that 
-\begin{align*}
-    \check{k}_n &:= \sum_{j=n}^{P} k_j \\
-    \check{\tau}_{n,1:\check{k}_n} &:=  \bigcup_{j=n}^{P} \left\{\tau_{j,1:k_j}\right\}\\
-    \check{\phi}_{n,1:\check{k}_n} &:=  \bigcup_{j=n}^{P} \left\{\phi_{j,1:k_j}\right\}
-\end{align*}
+\begin{equation*}
+    \check{k}_n := \sum_{j=n}^{P} k_j \quad\quad\quad \check{\tau}_{n,1:\check{k}_n} :=  \bigcup_{j=n}^{P} \left\{\tau_{j,1:k_j}\right\} \quad\quad\quad \check{\phi}_{n,1:\check{k}_n} :=  \bigcup_{j=n}^{P} \left\{\phi_{j,1:k_j}\right\}
+\end{equation*}
 Suppose the ancestor indices $b_{n+1}^{*},..,b_P^{*}$ have already been sampled and the corresponding particles \(x_{n}^{b_n^*},...,x_P^{b_P^*}\) form $\check{\mathcal{J}}_{n+1}^{*}$. If $\check{k}_{n+1}^{*}>0$, the unnormalised backward sampling incremental weight will be given by 
 \begin{equation}
     \label{PMCMC - VRPF Backward Simulation Weight 1}
