@@ -15,6 +15,7 @@
 \usepackage{bbm}
 \usepackage{natbib}
 \usepackage{setspace}
+\usepackage[dvipsnames]{xcolor}
 \usepackage[citecolor=blue,colorlinks=true,linkcolor=blue]{hyperref}
 \setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
 \usepackage{color}
@@ -394,7 +395,7 @@ If the resampling steps are also included in this scheme, the weights at step $n
     \end{equation}
     where we use represent \((x_{1:n-L-1}(L+1),x_{n-L}(L),..,x_{n-2}(2),x_{n-1}(1)))\) and \((x_{n}(1),x_{n-1}(2),...,x_{n-L}(L+1))\) as \(x_{1:n-1}\) and \(x_{n-L:n}^{'}\) respectively for the ease of presentation. The optimal conditional distribution that minimizes the incremental weight of \eqref{eqn:BlockSMC_G1} will be given in similar form. 
 \end{proposition}
-\begin{proposition}
+\begin{proposition}\label{Optimal proposal kernel}
     Given that the optimal artificial conditional distribution \(\{\lambda_n^{opt}\}\) is chosen. The corresponding optimal proposal distribution is given by 
     \begin{equation}
         \label{eqn:BlockSMC_OptimalK} 
@@ -455,31 +456,29 @@ and
     \end{split}
 \end{equation}
 \end{subequations}
-where $T_{(s,t]}^{M} := \left\{\tau | \tau \in (s,t]\right\}$. Moreover, denote $\bar{U}_{n-1}$ the jump time and value in the interval $(t_{n-1},t_n]$ that are modified at the $n$-th SMC step. According to the modifications we defined above, $\bar{U}_{n-1} := \left(\tau_{n-1,k_{n-1}},\phi_{n-1,k_{n-1}}\right)$ when $M_{n-1} = 0$ with the convention that $\left(\tau_{n-1,0},\phi_{n-1,0}\right) := \emptyset$ when $k_{n-1}=0$. In addition, $\bar{U}_{n-1} := \emptyset$ when $M_{n-1}=1$. Then, $\left(\bar{X}_{n-1},M_{n-1},\bar{U}_{n-1}\right)$ and $\left(X_{n-1},M_{n-1},U_{n-1}\right)$ actually represent the same set of random variables. Therefore, if we look at all the 'states' we have sampled up to the $n$-th SMC step, we can see that 
+where $T_{(s,t]}^{M} := \left\{\tau | \tau \in (s,t]\right\}$. Moreover, denote $\bar{U}_{n-1}$ the jump time and value in the interval $(t_{n-1},t_n]$ that are modified at the $n$-th SMC step. According to the modifications we defined above, $\bar{U}_{n-1} := \left(\tau_{n-1,k_{n-1}},\phi_{n-1,k_{n-1}}\right)$ when $M_{n-1} = 0$ with the convention that $\left(\tau_{n-1,0},\phi_{n-1,0}\right) := \emptyset$ when $k_{n-1}=0$. In addition, $\bar{U}_{n-1} := \emptyset$ when $M_{n-1}=1$. Then, $\left(X_{n-1}(2),M_{n-1},\bar{U}_{n-1}\right)$ and $\left(X_{n-1}(1),M_{n-1},U_{n-1}\right)$ actually represent the same set of random variables. Therefore, if we look at all the 'states' we have sampled up to the $n$-th SMC step, we can see that 
 \begin{equation}
 \label{eqn:ONE-ONE Transformation}
     \begin{split}
-        Z_{1:n} &:= \left(X_1,M_1,U_1,...,X_{n-1},M_{n-1},U_{n-1},X_n\right)\\
-                &:= \left(\bar{X}_{1},M_{1},\bar{U}_{1},...,\bar{X}_{n-1},M_{n-1},\bar{U}_{n-1},X_n\right)
+        Z_{1:n} &:= \left(X_1(1),M_1,U_1,...,X_{n-1}(1),M_{n-1},U_{n-1},X_n(1)\right)\\
+                &:= \left(X_{1}(2),M_{1},\bar{U}_{1},...,X_{n-1}(2),M_{n-1},\bar{U}_{n-1},X_n(1)\right)
     \end{split}
 \end{equation}
 i.e. there is a one-to-one transformation between the two parameterizations.
 
 \subsubsection{Target Density}
 In the following, we are going to present the extended target distribution of the algorithm. Since we have the one-to-one correspondence in \eqref{eqn:ONE-ONE Transformation}, it is the same to express the joint distribution of $Z_{1:n}$ in terms of 
-$\left(X_1,M_1,U_1,...,X_{n-1},M_{n-1},U_{n-1},X_n\right)$ as to express it in terms of $\left(\bar{X}_{1},M_{1},\bar{U}_{1},...,\bar{X}_{n-1},M_{n-1}, \allowbreak \bar{U}_{n-1},X_n\right)$. The reason why we care about this is that the distribution of the PDP given the observations at the $n$-th SMC step, $\zeta_{(0,t_n]}$, is determined by $\left(\bar{X}_{1},\bar{X}_{2},...,\bar{X}_{n-1},X_n\right)$. Hence, it is clearer to show that the extended target density incorporates the correct distribution as a marginal using the later parameterization. The extended target distribution of the algorithm, $\bar{\pi}_n(Z_{1:n}) := \bar{\gamma}_n(Z_{1:N})/\bar{Z}_n$, is given by
-\begin{equation}
+$\left(X_1(2),M_1,U_1,...,X_{n-1}(2),M_{n-1},U_{n-1},X_n(1)\right)$ as to express it in terms of $\left(X_{1}(2),M_{1},\bar{U}_{1},...,X_{n-1}(2),M_{n-1}, \allowbreak \bar{U}_{n-1},X_n(1)\right)$. The reason why we care about this is that the distribution of the PDP given the observations at the $n$-th SMC step, $\zeta_{(0,t_n]}$, is determined by $\left(X_{1}(2),X_{2}(2),...,X_{n-1}(2),X_n(1)\right)$. Hence, the target density should incorporate \(\gamma_(n)(x_1(2),x_2(2),..,x_{n-1}(2),x_n(1))\) as marginal. Therefore, we define the extended target distribution of the algorithm, $\bar{\pi}_n(Z_{1:n}) := \bar{\gamma}_n(Z_{1:N})/\bar{\mathcal{Z}}_n$, to be 
+\begin{multline}
     \label{Block-VRPF Target}
-    \begin{split}
-        \bar{\gamma}_n\left(Z_{1:n}\right) := \gamma_n\left(\bar{x}_{1},...,\bar{x}_{n-1},x_n\right)&\mu_n\left(m_{1:n-1}|\bar{x}_{1},...,\bar{x}_{n-1,},x_n\right)\\
-        & \times \prod_{j=1}^{n-1} \lambda_j\left(\bar{u}_{j} | m_{1:j},\bar{x}_{1},..\bar{x}_{j}\right) 
-    \end{split}
-\end{equation}
+    \bar{\gamma}_n\left(Z_{1:n}\right) := \gamma_(n)(x_{1:n-1}(2),x_n(1))\mu_n\left(m_{1:n-1}|x_{1:n-1}(2),x_n(1)\right)\\
+    \times \prod_{j=1}^{n-1} \lambda_j\left(\bar{u}_{j} | m_{1:j},x_{1:n-1}(2),x_n(1)\right) 
+\end{multline}
 
-As in the previous section, denote $\mathcal{J}_n := \left(\hat{k}_n,\hat{\tau}_{n,1:\hat{k}_n},\hat{\phi}_{n,1:\hat{k}_n}\right)$ be the jump times and values that defined the PDP, $\zeta_{(0,t_n]}$ at the $n$-th SMC step. Then, we will have that 
+where \(\{\mu_n\}\) and \(\{\lambda_n\}\) are artificial conditional densities. These densities are included to define a target distribuion on an extended space to avoid the need of integral evaluation, as discussed previous section. Similarly, denote $\mathcal{J}_n := \left(\hat{k}_n,\hat{\tau}_{n,1:\hat{k}_n},\hat{\phi}_{n,1:\hat{k}_n}\right)$ be the jump times and values that defining the PDP, $\zeta_{(0,t_n]}$ at the $n$-th SMC step. Then, \(\mathcal{J}_n\) can be completely defined by \((x_1(2),..,x_{n-1}(2),x_n(1))\) and we will have that 
 \begin{equation*}
     \begin{split}
-        \gamma_n\left(\bar{x}_{1},...,\bar{x}_{n-1},x_n\right) &= \gamma_n\left(\mathcal{J}_n\right)\\
+        \gamma_n\left(x_{1}(2),...,x_{n-1}(2),x_n(1)\right) &= \gamma_n\left(\mathcal{J}_n\right)\\
         &= S\left(\hat{\tau}_{n,\hat{k}_n},t_n\right)q\left(\hat{\phi}_0\right)g\left(y_{(0,t_n]}|\mathcal{J}_n\right)\\
         & \times \prod_{j=1}^{\hat{k}_n} \left\{f\left(\hat{\tau}_j|\hat{\tau}_{j-1}\right)q\left(\hat{\phi}_{j}|\hat{\phi}_{j-1},\hat{\tau}_{j},\hat{\tau}_{j-1}\right)\right\}
     \end{split}
@@ -503,7 +502,7 @@ If $M_{n-1} = 0$ and $k_{n-1} = 0$, then
 \end{equation}
 \end{subequations}
 
-Here, we use that convention that if $k_n = 0$, then Equation \eqref{Iterative Jn:Case1}, \eqref{Iterative Jn:Case2} and \eqref{Iterative Jn:Case3} will be simplified to $\left(\hat{k}_{n-1}+1+k_n,\mathcal{J}_{n-1}\backslash\left\{\hat{k}_{n-1}\right\},\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$, $\Big(\hat{k}_{n-1},\mathcal{J}_{n-1}\backslash\left\{\hat{k}_{n-1},\hat{\tau}_{n-1,\hat{k}_{n-1}},\hat{\phi}_{n-1,\hat{k}_{n-1}}\right\},\allowbreak \mathring{\tau}_{n-1}^{m},\mathring{\phi}_{n-1}\Big)$ and $\mathcal{J}_{n-1}$ respectively.
+Here, we use the convention that if $k_n = 0$, then Equation \eqref{Iterative Jn:Case1}, \eqref{Iterative Jn:Case2} and \eqref{Iterative Jn:Case3} will be simplified to $\left(\hat{k}_{n-1}+1+k_n,\mathcal{J}_{n-1}\backslash\left\{\hat{k}_{n-1}\right\},\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$, $\Big(\hat{k}_{n-1},\mathcal{J}_{n-1}\backslash\left\{\hat{k}_{n-1},\hat{\tau}_{n-1,\hat{k}_{n-1}},\hat{\phi}_{n-1,\hat{k}_{n-1}}\right\},\allowbreak \mathring{\tau}_{n-1}^{m},\mathring{\phi}_{n-1}\Big)$ and $\mathcal{J}_{n-1}$ respectively.
 \subsubsection{Proposal Kernel}
 As for the proposed kernel, we use $K_n\left(z_n|z_{1:n-1}\right) := K_{n,1}\left(m_{n-1}|z_{1:n-1}\right)K_{n,2}\left(u_{n-1}|m_{n-1},z_{1:n-1}\right)\allowbreak \times K_{n,3}\left(x_n|z_{1:n-1},m_{n-1},u_{n-1}\right)$, in which $K_{n,1}\left(m_{n-1}|z_{1:n-1}\right) := K_{n,1}\left(m_{n-1}|\mathcal{J}_{n-1}\right)$ propose a modification type based on the PDP in the interval $(0,t_{n-1}]$. We follow the kernel proposed in \cite{whiteley2011monte}, i.e. $K_{n,1}\left(0|\mathcal{J}_{n-1}\right):= S\left(\hat{\tau}_{n-1,,\hat{k}_{n-1}},t_{n-1}\right)$. This is to say that the probability that an 'adjust' is proposed equals to the prior density that no jump occurs 
 after the last jump in $\mathcal{J}_{n-1}$ and before the end of last epoch, $t_{n-1}$. If an 'birth' is proposed, then $U_{n-1}$ will be proposed according to 
@@ -524,7 +523,7 @@ K_{n,2}\left(u_{n-1}|a,z_{1:n-1}\right) := & \mathbbm{1}\left(k_{n-1} \geq 1\rig
 & + \mathbbm{1}(k_{n-1}=0) \times \delta_{\emptyset}(u_{n-1})
 \end{split}
 \end{equation}
-i.e. if $X_{n-1}$ contains no jumps at all and an 'adjust' is proposed, then $U_{n-1}$ will be an empty set.
+i.e. if $X_{n-1}(1)$ contains no jumps at all and an 'adjust' is proposed, then $U_{n-1}$ will be an empty set. Here, \(\alpha_{n-1,1}\) and \(\alpha_{n-1,0}\) are the proposal densities for the modified jump time on \(X_{n-1}(1)\) for a \textit{birth} and an \textit{adjustment} move respectively and \(\beta_{n-1,1}\) and \(\beta_{n-1,0}\) are the proposal densities for the corresponding jump values. 
 \end{subequations}
 
 To sample the jump times and values in the interval $(t_{n-1},t_n]$ according to $K_{n,3}$, we use similar proposals in VRPF method, i.e. 
@@ -537,16 +536,16 @@ K_{n,3}\left(x_n|m_{n-1},u_{n-1},z_{1:n-1}\right):=& K_{n,3}^{1}\left(k_n|m_{n-1
 \end{equation}
 
 \subsubsection{Auxiliary Densities}
-For the density $\mu_n\left(m_{1:n-1}|\bar{x}_{1},...,\bar{x}_{n-1},x_n\right)$ in \eqref{Block-VRPF Target}, we need to make sure that the support of it should be included in the support of the proposed kernel. To make it simple, we propose a factorizable density, i.e.
+As discussed before, the auxiliary densities are included to ensure that the importance weight will have the correct form to incorporate \(\gamma_n\) as marginals. However, when choosing these auxiliary densities, we need to ensure that the support of them are included in the support of the proposal kernels. Hence, for the density $\mu_n\left(m_{1:n-1}|x_{1:n-1}(2),x_n(1)\right)$ in \eqref{Block-VRPF Target}, we propose a factorizable density for simplicity, i.e.
 \begin{equation*}
-    \mu_n\left(m_{1:n-1}|\bar{x}_{1},...,\bar{x}_{n-1},x_{n}\right) := \prod_{j=1}^{n-1} \mu_{n}^{j}\left(m_j|\bar{x}_{j}\right)
+    \mu_n\left(m_{1:n-1}|x_{1:n-1(2),x_{n}(1)}\right) := \prod_{j=1}^{n-1} \mu_{n}^{j}\left(m_j|x_{1:j}(2)\right)
 \end{equation*}
 
-Furthermore, we propose a uniform distribution over 'adjust' and 'birth' on $m_{j}$ if $\bar{x}_{j}$ contains at least one jump, i.e.
-$$\mu_n^j(m_j|\bar{x}_j) := \frac{1}{2}\times \mathbbm{1}\left(\bar{k}_j > 0\right) + \mathbbm{1}(\bar{k}_j=0)\delta_{0}(m_j)$$
+Furthermore, we propose a uniform distribution over 'adjust' and 'birth' on $m_{j}$ if $x_{j}(2)$ contains at least one jump, i.e.
+$$\mu_n^j(m_j|x_{1:j}(2)) := \frac{1}{2}\times \mathbbm{1}\left(\bar{k}_j > 0\right) + \mathbbm{1}(\bar{k}_j=0)\delta_{0}(m_j)$$
 Other forms of densities are also possible as long as the densities have the correct support. 
 
-The density for the modified jump time and jump value, $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},\bar{x}_1,..,\bar{x}_j\right)$, is also subject to our choices. Note that if $M_{j} = 1$ or $M_{j}=0$ with $k_{j}=0$, there is actually nothing to be modified. In this case, $\bar{u}_{j} := \emptyset$ and  $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},\bar{x}_1,...,\bar{x}_j\right)$ becomes degenerate and equals to $1$ in these cases. When $M_{j}=0$ and $k_{j} \geq 1$, $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},\bar{x}_1,...,\bar{x}_j\right) := \lambda_{j}\left(\hat{\tau}_{j,\hat{k}_{j}},\hat{\phi}_{j,\hat{k}_{j}}|m_{1:j},\bar{x}_1,...,\bar{x}_j\right)$ will have support 
+The density for the modified jump time and jump value, $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},x_{1:j}(2)\right)$, is also subject to our choices. Note that if $M_{j} = 1$ or $M_{j}=0$ with $k_{j}=0$, there is actually nothing to be modified. In this case, $\bar{u}_{j} := \emptyset$ and  $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},x_{1:j}(2)\right)$ becomes degenerate and equals to $1$ in these cases. When $M_{j}=0$ and $k_{j} \geq 1$, $\lambda_{j}\left(\bar{u}_{j}|m_{1:j},x_{1:j}(2)\right) := \lambda_{j}\left(\hat{\tau}_{j,\hat{k}_{j}},\hat{\phi}_{j,\hat{k}_{j}}|m_{1:j},x_{1:j}(2)\right)$ will have support 
 $$\left(\hat{\tau}_{j,\hat{k}_{j}-1} \vee t_{n-2},t_{n-1}\right] \times \Phi$$
 One easy choice is to assign $\hat{\tau}_{j,\hat{k}_{j}}$ a uniform distribution over its support. For $\hat{\phi}_{j,\hat{k}_{j}}$, we can set it to follow its prior. 
 \subsubsection{Incremental Weight}
@@ -558,7 +557,7 @@ The incremental weight, $G_n\left(z_{1:n}\right):= \hat{\gamma}_n\left(z_{1:n}\r
         \end{split}
 \end{equation*}
 for any value of $n$. We will use this notation throughout this section. 
-When $m_{n-1} = 0$, i.e. an 'adjust' is proposed,
+When $m_{n-1} = 0$, i.e. an \textit{adjustment} is proposed,
 \begin{subequations}
 \begin{enumerate}
     \item If $k_{n-1} = 0$
@@ -577,7 +576,7 @@ When $m_{n-1} = 0$, i.e. an 'adjust' is proposed,
 \end{enumerate}
 \end{subequations}
 
-When $m_{n-1} = 1$, i.e. a 'birth' is proposed, 
+When $m_{n-1} = 1$, i.e. a \textit{birth} is proposed, 
 \begin{multline}
     \label{BlockVRPF_SMC_Incremental Weight_Birth}
     G_{n}\left(z_{1:n}\right) := \frac{S\left(\hat{\tau}_{n,\hat{k}_n},t_n\right)}{S\left(\hat{\tau}_{n-1,\hat{k}_{n-1}},t_{n-1}\right)} \times \frac{\mu_{n-1}(m_{n-1}|\bar{x}_{n-1})}{K_{n,1}\left(m_{n-1}|\mathcal{J}_{n-1}\right)}\times \frac{g\left(y_{(\mathring{\tau}_{n-1},t_n]}|\mathcal{J}_n\right)}{g\left(y_{(\mathring{\tau}_{n-1},t_{n-1}]}|\mathcal{J}_{n-1}\right)}\\\\
@@ -585,10 +584,19 @@ When $m_{n-1} = 1$, i.e. a 'birth' is proposed,
     \times \frac{h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)}{K_{n,3}^1(k_n|m_{n-1}=1,u_{n-1},z_{1:n-1})K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,m_{n-1}=1,u_{n-1},z_{1:n-1}\right)}
 \end{multline}
 In Equation \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}, \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} and \eqref{BlockVRPF_SMC_Incremental Weight_Birth}, $h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$ and $K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,1,u_{n-1},z_{1:n-1}\right)$ will all become $1$ when $k_n=0$. We omit the explicit representation of these two situations here since they are actually the special cases of the above representations. 
+The BlockVRPF method is outlined in Algorithm \ref{Alg:BlockVRPF}. The sampling schemes are not specifically outlined according to each case. More specifically, $U_{n-1}^i$ in line 12 of Algorithm \ref{Alg:BlockVRPF} will become $\emptyset$ when $M_{n-1}^i = 0$ and $k_{n-1}^{A_{n-1}^i} = 0$. \textcolor{YellowGreen}
+{BlockVRPF sampler we proposed in this section provides us with an opportunity to correct the jumps in the last time block. Such an correction is more obvious when a jump appears neat the end of a block in the actual process. This is illustrated in Figure \ref{BlockSMC_correction_illustration}. One can see that there is a jump occuring near the end of the first time block in the actual PDMP and this is missed by the VRPF sampler completely. One the contrary, due to the resampling step in the BlockVRPF sampler, there is a chance to recover this missed jump (as shown in the graph). Even if the missed jump is not recovered, the last jump value will also be modified in light of the observations occurring in the next time block, making it more accurate compared to the jump value sampled in the VRPF method.}
 
-The BlockVRPF method is outlined in Algorithm \ref{Alg:BlockVRPF}. The sampling schemes are not specifically outlined according to each case. More specifically, $U_{n-1}^i$ in line 12 of Algorithm \ref{Alg:BlockVRPF} will become $\emptyset$ when $M_{n-1}^i = 0$ and $k_{n-1}^{A_{n-1}^i} = 0$. 
-\section{Generic Formulation of BlockVRPF Samplers}
-We discussed a specific way of modifying the jump times and values in each time interval. Such modifications are similar to \cite{finke2014static} and \cite{whiteley2011monte}. In this section, we argue that the BlockVPRF sampler are suitable for more general modifications. 
+\textcolor{YellowGreen}
+{However, one may also notice that the calculation of incremental weights for the BlockVRPF sampler involve a likelihood ratio of part of the observations in the previous block conditinal on the new and old jump time and values. This suggest that if a modification significanly improves the estimation of the PDMP, the corresponding incremental weight will be significantly large, making it a dominating particle. This will introduce larger variance to the incremental weights, resulting in the BlockVRPF potentially having smaller ESSs. The incremental weight also depends on the sampled jumps in the new block at each SMC step. Hence, having proposal kernels that are close approximations to the optimal ones described in Proposition \ref{Optimal proposal kernel} is also crucial to the performance of the BlockVRPF sampler. Search for optimal proposal kernels or approximations of these kernels will therefore be possible directions of future work.}
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\textwidth]{BlockVRPF_Illustration.pdf}
+    \caption{Illustration of the correcting power of BlockVRPF sampler. Black line represents the actual PDMP we are interested. Given the same sampled jumps in the first block (time blocks are splitted by the yellow dashed line), both VRPF and BlockVPRF sampler were used to sample the jumps in the second block. These sampled processes are represented by red lines (VRPF) and green lines (BlockVRPF)}
+    \label{BlockSMC_correction_illustration}
+\end{figure}
+
 \begin{algorithm}
     \caption{Block Variable Rate Particle Filter (BlockVRPF)}\label{Alg:BlockVRPF}
     \For{n=1}{
@@ -865,10 +873,6 @@ The rejuvenation step proposed by \cite{finke2014static} can be used to solve th
 \end{algorithm}
 
 Note that the rejuvenation step re-samples the auxiliary variables, which are the modification moves as well as the jump times and values being modified at each SMC step. Hence, this gives the path a chance to have another modification move or another jump times and values to be modified. As such, the likelihood ratio of this specific particle will possibly be decreased, giving other particles from the SMC step an opportunity to be chosen at each sweep. Therefore, such a rejuvenation step will help the particle Gibbs scheme to escape from the stuck path, hence improving the mixing of the chain. 
-\section{Numerical Examples}
-\subsection{Generic Setup}
-In this section, we are going to show the correctness of the BlockVRPF sampler within particle Gibbs through two challenging problems - the \textit{elementary change-point model} and the \textit{short-noise Cox model}. As a comparison, we also ran the particle Gibbs with VRPF sampler and for each method, we also perform the backward simulation step described in section \ref{Section-BackwardSimulation}. In the particle Gibbs sampler, static parameters \(\theta\) are updated through a Metropolis within particle Gibbs (MwPG) step with new parameters set being proposed through a centered multivariate Gaussian kernel using an appropriately chosen covariance matrix that reflects the structure of the joint posterior density of \(\theta\). We ran a pilot particle Gibbs sampler following the adaptive tunning strategies of \cite{andrieu2008tutorial} to obtain the suitable scale factor $\lambda$ and covariance matrix \(\Sigma\) for the proposals. Hence, in both examples, proposal parameter sets \(\theta'\) are sampled from \(\mathcal{N}(\theta,\lambda^2\Sigma)\) where \(\theta\) is the previous paramter state. In the actual particle Gibbs sampler, given a PDMP obtained from the cSMC algorithm, we run the MH algorithm for 500 times for faster mixing of the particle Gibbs sampler. 
-\subsection{Elementary Change Point Model}
 \newpage
 \bibliographystyle{icml2020}
 \bibliography{reference}

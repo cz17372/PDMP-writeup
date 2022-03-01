@@ -81,6 +81,7 @@
 \newlabel{eqn:BlockSMC_optimallambda}{{24}{14}{}{equation.5.24}{}}
 \citation{doucet2006efficient}
 \citation{whiteley2011monte}
+\newlabel{Optimal proposal kernel}{{2}{15}{}{proposition.2}{}}
 \newlabel{eqn:BlockSMC_OptimalK}{{25}{15}{}{equation.5.25}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Block Variable Rate Particle Filter (Block-VRPF)}{15}{subsection.5.2}\protected@file@percent }
 \newlabel{def:Modified Birth States}{{26a}{16}{Block Variable Rate Particle Filter (Block-VRPF)}{equation.5.26a}{}}
@@ -92,8 +93,8 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Target Density}{17}{subsubsection.5.2.1}\protected@file@percent }
 \newlabel{Block-VRPF Target}{{30}{17}{Target Density}{equation.5.30}{}}
 \newlabel{Iterative Jn:Case1}{{31a}{17}{Target Density}{equation.5.31a}{}}
-\newlabel{Iterative Jn:Case2}{{31b}{17}{Target Density}{equation.5.31b}{}}
 \citation{whiteley2011monte}
+\newlabel{Iterative Jn:Case2}{{31b}{18}{Target Density}{equation.5.31b}{}}
 \newlabel{Iterative Jn:Case3}{{31c}{18}{Target Density}{equation.5.31c}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Proposal Kernel}{18}{subsubsection.5.2.2}\protected@file@percent }
 \newlabel{ProposedU:Birth}{{32a}{18}{Proposal Kernel}{equation.5.32a}{}}
@@ -103,68 +104,62 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.4}Incremental Weight}{19}{subsubsection.5.2.4}\protected@file@percent }
 \newlabel{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}{{34a}{20}{Incremental Weight}{equation.5.34a}{}}
 \newlabel{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU}{{34b}{20}{Incremental Weight}{equation.5.34b}{}}
-\citation{finke2014static}
-\citation{whiteley2011monte}
 \newlabel{BlockVRPF_SMC_Incremental Weight_Birth}{{35}{21}{Incremental Weight}{equation.5.35}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Generic Formulation of BlockVRPF Samplers}{21}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Static Parameter Estimations using Particle Gibbs}{21}{section.7}\protected@file@percent }
 \@writefile{loa}{\contentsline {algocf}{\numberline {5}{\ignorespaces Block Variable Rate Particle Filter (BlockVRPF)}}{22}{algocf.5}\protected@file@percent }
-\newlabel{Alg:BlockVRPF}{{5}{22}{Generic Formulation of BlockVRPF Samplers}{algocf.5}{}}
+\newlabel{Alg:BlockVRPF}{{5}{22}{Incremental Weight}{algocf.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Illustration of the correcting power of BlockVRPF sampler. Black line represents the actual PDMP we are interested. Given the same sampled jumps in the first block (time blocks are splitted by the yellow dashed line), both VRPF and BlockVPRF sampler were used to sample the jumps in the second block. These sampled processes are represented by red lines (VRPF) and green lines (BlockVRPF)}}{23}{figure.1}\protected@file@percent }
+\newlabel{BlockSMC_correction_illustration}{{1}{23}{Illustration of the correcting power of BlockVRPF sampler. Black line represents the actual PDMP we are interested. Given the same sampled jumps in the first block (time blocks are splitted by the yellow dashed line), both VRPF and BlockVPRF sampler were used to sample the jumps in the second block. These sampled processes are represented by red lines (VRPF) and green lines (BlockVRPF)}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Static Parameter Estimations using Particle Gibbs}{23}{section.6}\protected@file@percent }
 \citation{andrieu2010particle}
 \citation{andrieu2010particle}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Particle Markov Chain Monte Carlo (PMCMC) Methods }{23}{subsection.7.1}\protected@file@percent }
-\newlabel{PMCMC-marginal likelihood}{{36}{23}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.7.36}{}}
-\newlabel{PMCMC - Approximation of Step 2 Distribution}{{37}{23}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.7.37}{}}
-\newlabel{JointDensity-of-SMC}{{39}{24}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.7.39}{}}
-\newlabel{PMCMC-Form of extended target}{{40}{24}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.7.40}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Particle Markov Chain Monte Carlo (PMCMC) Methods }{24}{subsection.6.1}\protected@file@percent }
+\newlabel{PMCMC-marginal likelihood}{{36}{24}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.6.36}{}}
+\newlabel{PMCMC - Approximation of Step 2 Distribution}{{37}{24}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.6.37}{}}
+\newlabel{JointDensity-of-SMC}{{39}{25}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.6.39}{}}
+\newlabel{PMCMC-Form of extended target}{{40}{25}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.6.40}{}}
 \citation{andrieu2010particle}
 \citation{andrieu2010particle}
 \citation{liu2001monte}
 \citation{van2008partially}
 \citation{van2008partially}
 \citation{andrieu2010particle}
-\newlabel{Conditional SMC}{{41}{25}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.7.41}{}}
+\newlabel{Conditional SMC}{{41}{26}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.6.41}{}}
 \citation{lindsten2013backward}
-\@writefile{loa}{\contentsline {algocf}{\numberline {6}{\ignorespaces Conditional SMC Sampler (cSMC)}}{26}{algocf.6}\protected@file@percent }
-\newlabel{Alg:CSMC}{{6}{26}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{algocf.6}{}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {6}{\ignorespaces Conditional SMC Sampler (cSMC)}}{27}{algocf.6}\protected@file@percent }
+\newlabel{Alg:CSMC}{{6}{27}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{algocf.6}{}}
 \citation{whiteley2014backwardsampling}
 \citation{lindsten2012use}
-\newlabel{PMCMC-another way of writing piP}{{42}{27}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.7.42}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Particle Gibbs with Backward Sampling}{27}{subsection.7.2}\protected@file@percent }
-\newlabel{Section-BackwardSimulation}{{7.2}{27}{Particle Gibbs with Backward Sampling}{subsection.7.2}{}}
-\@writefile{loa}{\contentsline {algocf}{\numberline {7}{\ignorespaces particle Gibbs sampler}}{28}{algocf.7}\protected@file@percent }
-\newlabel{Alg: PG}{{7}{28}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{algocf.7}{}}
-\newlabel{PMCMC-Marginal of psi}{{43}{29}{Particle Gibbs with Backward Sampling}{equation.7.43}{}}
-\newlabel{PMCMC-PGBS conditional}{{44}{29}{Particle Gibbs with Backward Sampling}{equation.7.44}{}}
-\@writefile{loa}{\contentsline {algocf}{\numberline {8}{\ignorespaces particle Gibbs with Backward Simulation}}{30}{algocf.8}\protected@file@percent }
-\newlabel{Alg: PGBSi}{{8}{30}{Particle Gibbs with Backward Sampling}{algocf.8}{}}
-\newlabel{PMCMC - VRPF Backward Simulation Weight 1}{{45}{30}{Particle Gibbs with Backward Sampling}{equation.7.45}{}}
-\newlabel{PMCMC - VRPF Backward Simulation Weight 2}{{46}{30}{Particle Gibbs with Backward Sampling}{equation.7.46}{}}
+\newlabel{PMCMC-another way of writing piP}{{42}{28}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{equation.6.42}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Particle Gibbs with Backward Sampling}{28}{subsection.6.2}\protected@file@percent }
+\newlabel{Section-BackwardSimulation}{{6.2}{28}{Particle Gibbs with Backward Sampling}{subsection.6.2}{}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {7}{\ignorespaces particle Gibbs sampler}}{29}{algocf.7}\protected@file@percent }
+\newlabel{Alg: PG}{{7}{29}{Particle Markov Chain Monte Carlo (PMCMC) Methods}{algocf.7}{}}
+\newlabel{PMCMC-Marginal of psi}{{43}{30}{Particle Gibbs with Backward Sampling}{equation.6.43}{}}
+\newlabel{PMCMC-PGBS conditional}{{44}{30}{Particle Gibbs with Backward Sampling}{equation.6.44}{}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {8}{\ignorespaces particle Gibbs with Backward Simulation}}{31}{algocf.8}\protected@file@percent }
+\newlabel{Alg: PGBSi}{{8}{31}{Particle Gibbs with Backward Sampling}{algocf.8}{}}
+\newlabel{PMCMC - VRPF Backward Simulation Weight 1}{{45}{31}{Particle Gibbs with Backward Sampling}{equation.6.45}{}}
+\newlabel{PMCMC - VRPF Backward Simulation Weight 2}{{46}{31}{Particle Gibbs with Backward Sampling}{equation.6.46}{}}
 \citation{finke2014static}
 \citation{finke2014static}
-\newlabel{PMCMC - BlockVRPF Backward Simulation Weight 1}{{47}{31}{Particle Gibbs with Backward Sampling}{equation.7.47}{}}
-\newlabel{PMCMC - BlockVRPF Backward Simulation Weight 2}{{48}{31}{Particle Gibbs with Backward Sampling}{equation.7.48}{}}
-\newlabel{PMCMC - BlockVRPF Backward Simulation Weight 3}{{49}{31}{Particle Gibbs with Backward Sampling}{equation.7.49}{}}
-\newlabel{PMCMC - BlockVRPF Backward Simulation Weight 4}{{50}{31}{Particle Gibbs with Backward Sampling}{equation.7.50}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Auxiliary Variable Rejuvenation}{31}{section.8}\protected@file@percent }
-\citation{andrieu2008tutorial}
-\@writefile{loa}{\contentsline {algocf}{\numberline {9}{\ignorespaces particle Gibbs with rejuvenation step}}{32}{algocf.9}\protected@file@percent }
-\newlabel{particle Gibbs-rejuvenation}{{8}{32}{Auxiliary Variable Rejuvenation}{AlgoLine.9.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Numerical Examples}{33}{section.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Generic Setup}{33}{subsection.9.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Elementary Change Point Model}{33}{subsection.9.2}\protected@file@percent }
+\newlabel{PMCMC - BlockVRPF Backward Simulation Weight 1}{{47}{32}{Particle Gibbs with Backward Sampling}{equation.6.47}{}}
+\newlabel{PMCMC - BlockVRPF Backward Simulation Weight 2}{{48}{32}{Particle Gibbs with Backward Sampling}{equation.6.48}{}}
+\newlabel{PMCMC - BlockVRPF Backward Simulation Weight 3}{{49}{32}{Particle Gibbs with Backward Sampling}{equation.6.49}{}}
+\newlabel{PMCMC - BlockVRPF Backward Simulation Weight 4}{{50}{32}{Particle Gibbs with Backward Sampling}{equation.6.50}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Auxiliary Variable Rejuvenation}{32}{section.7}\protected@file@percent }
+\@writefile{loa}{\contentsline {algocf}{\numberline {9}{\ignorespaces particle Gibbs with rejuvenation step}}{33}{algocf.9}\protected@file@percent }
+\newlabel{particle Gibbs-rejuvenation}{{8}{33}{Auxiliary Variable Rejuvenation}{AlgoLine.9.8}{}}
 \bibstyle{icml2020}
 \bibdata{reference}
-\bibcite{andrieu2008tutorial}{{1}{2008}{{Andrieu \& Thoms}}{{Andrieu and Thoms}}}
-\bibcite{andrieu2010particle}{{2}{2010}{{Andrieu et~al.}}{{Andrieu, Doucet, and Holenstein}}}
-\bibcite{del2006sequential}{{3}{2006}{{Del~Moral et~al.}}{{Del~Moral, Doucet, and Jasra}}}
-\bibcite{doucet2006efficient}{{4}{2006}{{Doucet et~al.}}{{Doucet, Briers, and S{\'e}n{\'e}cal}}}
-\bibcite{finke2014static}{{5}{2014}{{Finke et~al.}}{{Finke, Johansen, and Span{\`o}}}}
-\bibcite{godsill2005variable}{{6}{2005}{{Godsill \& Vermaak}}{{Godsill and Vermaak}}}
-\bibcite{lindsten2012use}{{7}{2012}{{Lindsten \& Sch{\"o}n}}{{Lindsten and Sch{\"o}n}}}
-\bibcite{lindsten2013backward}{{8}{2013}{{Lindsten \& Sch{\"o}n}}{{Lindsten and Sch{\"o}n}}}
-\bibcite{liu2001monte}{{9}{2001}{{Liu}}{{}}}
-\bibcite{van2008partially}{{10}{2008}{{Van~Dyk \& Park}}{{Van~Dyk and Park}}}
-\bibcite{whiteley2014backwardsampling}{{11}{2010}{{Whiteley}}{{}}}
-\bibcite{whiteley2011monte}{{12}{2011}{{Whiteley et~al.}}{{Whiteley, Johansen, and Godsill}}}
+\bibcite{andrieu2010particle}{{1}{2010}{{Andrieu et~al.}}{{Andrieu, Doucet, and Holenstein}}}
+\bibcite{del2006sequential}{{2}{2006}{{Del~Moral et~al.}}{{Del~Moral, Doucet, and Jasra}}}
+\bibcite{doucet2006efficient}{{3}{2006}{{Doucet et~al.}}{{Doucet, Briers, and S{\'e}n{\'e}cal}}}
+\bibcite{finke2014static}{{4}{2014}{{Finke et~al.}}{{Finke, Johansen, and Span{\`o}}}}
+\bibcite{godsill2005variable}{{5}{2005}{{Godsill \& Vermaak}}{{Godsill and Vermaak}}}
+\bibcite{lindsten2012use}{{6}{2012}{{Lindsten \& Sch{\"o}n}}{{Lindsten and Sch{\"o}n}}}
+\bibcite{lindsten2013backward}{{7}{2013}{{Lindsten \& Sch{\"o}n}}{{Lindsten and Sch{\"o}n}}}
+\bibcite{liu2001monte}{{8}{2001}{{Liu}}{{}}}
+\bibcite{van2008partially}{{9}{2008}{{Van~Dyk \& Park}}{{Van~Dyk and Park}}}
+\bibcite{whiteley2014backwardsampling}{{10}{2010}{{Whiteley}}{{}}}
+\bibcite{whiteley2011monte}{{11}{2011}{{Whiteley et~al.}}{{Whiteley, Johansen, and Godsill}}}
 \gdef \@abspage@last{34}
