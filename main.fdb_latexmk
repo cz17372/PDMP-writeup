@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex main"] 1646120325 "main.aux" "main.bbl" "main" 1646153930
+["bibtex main"] 1646620115 "main.aux" "main.bbl" "main" 1646620116
   "./icml2020.bst" 1643821010 26218 ad90dc054d5441ca63aa95e5925b644c ""
-  "main.aux" 1646153916 15172 9ef577cce6767070273f6484d9007d65 "pdflatex"
-  "reference.bib" 1645437798 4010 a9d99133a6b24311dae06cab404e6723 ""
+  "main.aux" 1646620116 16255 63a4581eb077a31c95c54e149c7d9e1d "pdflatex"
+  "reference.bib" 1646547124 4357 f328ced4d4ac0e4c45a388e8fff25175 ""
   (generated)
-  "main.bbl"
   "main.blg"
-["pdflatex"] 1646153915 "/Users/changzhang/Documents/GitHub/PDMP-writeup/main.tex" "main.pdf" "main" 1646153930
-  "/Users/changzhang/Documents/GitHub/PDMP-writeup/main.tex" 1646153929 97649 fbd46ccf3e10fc283d95f669c8f03a9c ""
+  "main.bbl"
+["pdflatex"] 1646620115 "/Users/changzhang/Documents/GitHub/PDMP-writeup/main.tex" "main.pdf" "main" 1646620116
+  "/Users/changzhang/Documents/GitHub/PDMP-writeup/main.tex" 1646620113 107051 c193c1b6e17cd1e6966432633858784d ""
   "/Users/changzhang/Library/texlive/2021/texmf-var/fonts/pk/ljfour/public/bbm/bbm12.600pk" 1643790623 8424 077b1c20c5e8c0dd63cf17eaf9227304 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -143,12 +143,13 @@
   "/usr/local/texlive/2021/texmf.cnf" 1616695596 577 4c1911a7228e554c6032256d3cf5567d ""
   "BlockVRPF_Illustration.pdf" 1646107472 149741 ccc739641da8ffac7213db9097946402 ""
   "CP_data.pdf" 1646153881 56100 735324502446b36ecaff52549c19e359 ""
-  "main.aux" 1646153916 15172 9ef577cce6767070273f6484d9007d65 "pdflatex"
-  "main.bbl" 1646120325 3519 bd2716fcbe603df919281c2d4efeea87 "bibtex main"
-  "main.out" 1646153916 4405 347e9e15a08ee4d720e0c24578db3039 "pdflatex"
-  "main.tex" 1646153929 97649 fbd46ccf3e10fc283d95f669c8f03a9c ""
+  "SNC_Data.pdf" 1646582608 67768 a41a7429b9275249007d6508f62ae4a0 ""
+  "main.aux" 1646620116 16255 63a4581eb077a31c95c54e149c7d9e1d "pdflatex"
+  "main.bbl" 1646620115 3823 2a2646b01458c8210de43a5abb50dc77 "bibtex main"
+  "main.out" 1646620116 4676 aa7bbf1729b810e775ee2e58c1ebb4da "pdflatex"
+  "main.tex" 1646620113 107051 c193c1b6e17cd1e6966432633858784d ""
   (generated)
   "main.aux"
   "main.log"
-  "main.out"
   "main.pdf"
+  "main.out"

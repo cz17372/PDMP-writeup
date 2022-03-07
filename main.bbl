@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{12}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -56,6 +56,12 @@ Lindsten, F. and Sch{\"o}n, T.~B.
 Liu, J.~S.
 \newblock \emph{Monte Carlo strategies in scientific computing}, volume~10.
 \newblock Springer, 2001.
+
+\bibitem[Liu et~al.(1994)Liu, Wong, and Kong]{liu1994covariance}
+Liu, J.~S., Wong, W.~H., and Kong, A.
+\newblock Covariance structure of the gibbs sampler with applications to the
+  comparisons of estimators and augmentation schemes.
+\newblock \emph{Biometrika}, 81\penalty0 (1):\penalty0 27--40, 1994.
 
 \bibitem[Van~Dyk \& Park(2008)Van~Dyk and Park]{van2008partially}
 Van~Dyk, D.~A. and Park, T.

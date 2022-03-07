@@ -92,16 +92,16 @@
 \newlabel{eqn:ONE-ONE Transformation}{{29}{17}{Block Variable Rate Particle Filter (Block-VRPF)}{equation.5.29}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Target Density}{17}{subsubsection.5.2.1}\protected@file@percent }
 \newlabel{Block-VRPF Target}{{30}{17}{Target Density}{equation.5.30}{}}
-\newlabel{Iterative Jn:Case1}{{31a}{17}{Target Density}{equation.5.31a}{}}
 \citation{whiteley2011monte}
+\newlabel{Iterative Jn:Case1}{{31a}{18}{Target Density}{equation.5.31a}{}}
 \newlabel{Iterative Jn:Case2}{{31b}{18}{Target Density}{equation.5.31b}{}}
 \newlabel{Iterative Jn:Case3}{{31c}{18}{Target Density}{equation.5.31c}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Proposal Kernel}{18}{subsubsection.5.2.2}\protected@file@percent }
 \newlabel{ProposedU:Birth}{{32a}{18}{Proposal Kernel}{equation.5.32a}{}}
 \newlabel{ProposedU:Adjust}{{32b}{18}{Proposal Kernel}{equation.5.32b}{}}
-\newlabel{BlockVRPF-ProposedX}{{33}{18}{Proposal Kernel}{equation.5.33}{}}
+\newlabel{BlockVRPF-ProposedX}{{33}{19}{Proposal Kernel}{equation.5.33}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Auxiliary Densities}{19}{subsubsection.5.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.4}Incremental Weight}{19}{subsubsection.5.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.4}Incremental Weight}{20}{subsubsection.5.2.4}\protected@file@percent }
 \newlabel{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}{{34a}{20}{Incremental Weight}{equation.5.34a}{}}
 \newlabel{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU}{{34b}{20}{Incremental Weight}{equation.5.34b}{}}
 \newlabel{BlockVRPF_SMC_Incremental Weight_Birth}{{35}{21}{Incremental Weight}{equation.5.35}{}}
@@ -143,19 +143,22 @@
 \newlabel{PMCMC - BlockVRPF Backward Simulation Weight 1}{{47}{31}{Particle Gibbs with Backward Sampling}{equation.6.47}{}}
 \newlabel{PMCMC - BlockVRPF Backward Simulation Weight 2}{{48}{31}{Particle Gibbs with Backward Sampling}{equation.6.48}{}}
 \citation{finke2014static}
-\citation{finke2014static}
+\citation{liu1994covariance,van2008partially}
 \newlabel{PMCMC - BlockVRPF Backward Simulation Weight 3}{{49}{32}{Particle Gibbs with Backward Sampling}{equation.6.49}{}}
 \newlabel{PMCMC - BlockVRPF Backward Simulation Weight 4}{{50}{32}{Particle Gibbs with Backward Sampling}{equation.6.50}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Auxiliary Variable Rejuvenation}{32}{section.7}\protected@file@percent }
-\@writefile{loa}{\contentsline {algocf}{\numberline {9}{\ignorespaces particle Gibbs with rejuvenation step}}{33}{algocf.9}\protected@file@percent }
-\newlabel{particle Gibbs-rejuvenation}{{8}{33}{Auxiliary Variable Rejuvenation}{AlgoLine.9.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Numerical Examples}{33}{section.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Elementary Change-point Model}{33}{subsection.8.1}\protected@file@percent }
-\citation{finke2014static}
-\citation{whiteley2011monte}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Simulated data of the change-point model described in this section The static parameters take value \((\rho ,\sigma _\phi ^2,\sigma _y^2,\alpha ,\beta ):=(0.9,1.0,0.5,4.0,10.0)\). Grey points are the noisy observations recorded at every \(\Delta _t := 1\). The red lines represent the actual PDMP}}{34}{figure.2}\protected@file@percent }
-\newlabel{Fig:Changpoint Data}{{2}{34}{Simulated data of the change-point model described in this section The static parameters take value \((\rho ,\sigma _\phi ^2,\sigma _y^2,\alpha ,\beta ):=(0.9,1.0,0.5,4.0,10.0)\). Grey points are the noisy observations recorded at every \(\Delta _t := 1\). The red lines represent the actual PDMP}{figure.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Short-noise Cox Model}{34}{subsection.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Auxiliary Variable Rejuvenation}{32}{subsection.6.3}\protected@file@percent }
+\newlabel{Block-VRPF Target2}{{51}{32}{Auxiliary Variable Rejuvenation}{equation.6.51}{}}
+\@writefile{loa}{\contentsline {algocf}{\numberline {9}{\ignorespaces particle Gibbs with rejuvenation}}{34}{algocf.9}\protected@file@percent }
+\newlabel{PG with rejuvenation}{{9}{34}{Auxiliary Variable Rejuvenation}{algocf.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Numerical Examples}{34}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Elementary Change-point Model}{34}{subsection.7.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Simulated data of the change-point model described in this section The static parameters take value \((\rho ,\sigma _\phi ^2,\sigma _y^2,\alpha ,\beta ):=(0.9,1.0,0.5,4.0,10.0)\). Grey points are the noisy observations recorded at every \(\Delta _t := 1\). The red lines represent the actual PDMP}}{35}{figure.2}\protected@file@percent }
+\newlabel{Fig:Changpoint Data}{{2}{35}{Simulated data of the change-point model described in this section The static parameters take value \((\rho ,\sigma _\phi ^2,\sigma _y^2,\alpha ,\beta ):=(0.9,1.0,0.5,4.0,10.0)\). Grey points are the noisy observations recorded at every \(\Delta _t := 1\). The red lines represent the actual PDMP}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Short-noise Cox Model}{36}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.1}The Model}{36}{subsubsection.7.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Data simulated from the short-noise Cox model. Static parameters used are \(\theta :=(\lambda _\tau ,\lambda _\phi ,\kappa )= (1/40,2/3,1/100)\). Top: The intensity process \(\zeta _t\) of the Cox model. Bottom: histogram of the event times with bin width equal to 2.5.}}{37}{figure.3}\protected@file@percent }
+\newlabel{Figure: SNC Data}{{3}{37}{Data simulated from the short-noise Cox model. Static parameters used are \(\theta :=(\lambda _\tau ,\lambda _\phi ,\kappa )= (1/40,2/3,1/100)\). Top: The intensity process \(\zeta _t\) of the Cox model. Bottom: histogram of the event times with bin width equal to 2.5}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.2.2}The Simulation}{37}{subsubsection.7.2.2}\protected@file@percent }
 \bibstyle{icml2020}
 \bibdata{reference}
 \bibcite{andrieu2010particle}{{1}{2010}{{Andrieu et~al.}}{{Andrieu, Doucet, and Holenstein}}}
@@ -166,7 +169,8 @@
 \bibcite{lindsten2012use}{{6}{2012}{{Lindsten \& Sch{\"o}n}}{{Lindsten and Sch{\"o}n}}}
 \bibcite{lindsten2013backward}{{7}{2013}{{Lindsten \& Sch{\"o}n}}{{Lindsten and Sch{\"o}n}}}
 \bibcite{liu2001monte}{{8}{2001}{{Liu}}{{}}}
-\bibcite{van2008partially}{{9}{2008}{{Van~Dyk \& Park}}{{Van~Dyk and Park}}}
-\bibcite{whiteley2014backwardsampling}{{10}{2010}{{Whiteley}}{{}}}
-\bibcite{whiteley2011monte}{{11}{2011}{{Whiteley et~al.}}{{Whiteley, Johansen, and Godsill}}}
-\gdef \@abspage@last{35}
+\bibcite{liu1994covariance}{{9}{1994}{{Liu et~al.}}{{Liu, Wong, and Kong}}}
+\bibcite{van2008partially}{{10}{2008}{{Van~Dyk \& Park}}{{Van~Dyk and Park}}}
+\bibcite{whiteley2014backwardsampling}{{11}{2010}{{Whiteley}}{{}}}
+\bibcite{whiteley2011monte}{{12}{2011}{{Whiteley et~al.}}{{Whiteley, Johansen, and Godsill}}}
+\gdef \@abspage@last{39}
