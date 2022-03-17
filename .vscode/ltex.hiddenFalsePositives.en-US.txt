@@ -1,0 +1,1 @@
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QResults obtained from VRPF and BlockVRPF samplers are in orange and green colour respectively.\\E$"}

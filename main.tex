@@ -4,10 +4,12 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{enumitem}
+\usepackage{comment}
 \usepackage{setspace}
 \usepackage{geometry}
 \usepackage{stmaryrd}
 \usepackage{graphics}
+\usepackage{rotating}
 \usepackage[linesnumbered,vlined,boxruled]{algorithm2e}
 \usepackage{algpseudocode}
 \usepackage{import}
@@ -37,8 +39,10 @@ left = 20mm,
 right = 20mm
 }
 \begin{document}
-\section{Piecewise Deterministic Processes}
-Piecewise Deterministic Processes (PDPs) are stochastic processes that jump randomly at an almost surely countable number of random times but otherwise evolve deterministically in continuous time. In this chapter, we give an introduction to this class of models and then give a mathematical representation of this class of models.
+\tableofcontents
+\section{Introduction}
+\section{Piecewise Deterministic Processes}\label{section: intro to PDMP}
+In this section, we follow the descriptions in \cite{whiteley2011monte} and \cite{finke2014static} to give an introduction on the discretely observed piecewise deterministic processes (PDPs). They are stochastic processes that jump randomly at an almost surely countable number of random times but otherwise evolve deterministically in continuous time. We also provide descriptions on the examples we consider in this work. 
 
 Let $(\tau_j,\phi_j)_{j \in \mathbb{N}}$ be a stochastic process that represents the random jump times and the corresponding jump values. Moreover, all the $\tau$'s will take values such that $\tau_0 = 0$ and $\tau_0<\tau_1<\tau_2<...$. We also define $\Phi$ to be the support for all the jump values $(\phi_j)_{j \in \mathbb{N}}$. A Piecewise Deterministic Process (PDP) is a continuous time stochastic process $(\zeta_t)_{t \geq 0}$ such that $\zeta_0 := \phi_0$ and 
 $$\zeta_t := F^{\theta}(t|\tau_{v_t},\phi_{v_t})$$
@@ -46,9 +50,9 @@ where $v_t := \sup \{j \in \mathbb{N}|\tau_j \leq t \}$ represents the latest ju
 \begin{multline}
 \label{eqn:Chap1-PDMP-Prior}
     p_n^{\theta}(k_n,\tau_{1:k_n},\phi_{1:k_n},\phi_0) = S^{\theta}(\tau_{k_n},t_n)q_0^{\theta}(\phi_0)\mathbbm{I}_{(0,t_n]}(\tau_{k_n})\mathbbm{I}(0 < \tau_1 < \tau_2 <.. <\tau_{k_n} < t_n)\\
-    \times \prod_{j=1}^{n} f^{\theta}(\tau_j|\tau_{j-1}) g^{\theta}(\phi_j|\tau_j,\tau_{j-1},\phi_{j-1})
+    \times \prod_{j=1}^{n} f^{\theta}(\tau_j|\tau_{j-1}) g^{\theta}(\phi_j|\tau_j,\tau_{j-1},\phi_{j-1}),
 \end{multline}
-Where \(S^{\theta}(\tau_{k_n},t_n):= 1- \int_{\tau_{k_n}}^{t_n} f^{\theta}(s|\tau_{k_n})\,ds\) denotes the probability that no jump occurring in the interval $(\tau_{k_n},t_n]$ and $f^{\theta}$, $g^{\theta}$ represents the conditional probability density of the jump times and the associated jump values. Note that we also included the density of $k_n$, the number of jumps up to $t_n$ in the posterior $\pi_n$. The reason why we included it in the posterior is that $\pi_n$ can therefore be defined on the increasing subsets of the same space 
+where \(S^{\theta}(\tau_{k_n},t_n):= 1- \int_{\tau_{k_n}}^{t_n} f^{\theta}(s|\tau_{k_n})\,ds\) denotes the probability that no jump occurring in the interval $(\tau_{k_n},t_n]$ and $f^{\theta}$, $g^{\theta}$ represents the conditional probability density of the jump times and the associated jump values. Note that we also included the density of $k_n$, the number of jumps up to $t_n$ in the posterior $\pi_n$. The reason why we included it in the posterior is that $\pi_n$ can therefore be defined on the increasing subsets of the same space 
 \begin{equation*}
     \Tilde{E}_n = \bigcup_{k=0}^{\infty} \left\{\{k\}\times T_{n,k} \times \Phi^{k+1}\right\}
 \end{equation*}
@@ -70,16 +74,60 @@ The posterior density of the jump times and values up to $t_n$ will then be give
 		 &=p_n^{\theta}(k_n,\tau_{1:k_n},\phi_{1:k_n},\phi_0)  p^{\theta}(y_{(0,t_n]}|\zeta_{(0,t_n]}) / Z_n^{\theta}		
 	\end{split} 
 \end{equation}
-where $Z_n^{\theta}$ is the normalising constant, which is typically unknown. We will refer this posterior distribution as $\pi_n$ in the future discussion when \(\theta\) is assumed to be known. In practice, we are often interested in the Bayesian inferences based on the posterior distributions of the jumps defined in \eqref{eqn:Chap1-PDMP-Posterior} with known static model paramters \(\theta\). It is a more common problem to make Bayesian inference on the static parameter \(\theta\). In this case, we assign a prior \(\pi(\theta)\) to the parameters and try to find the posterior distribution of \(\theta\)
+where $Z_n^{\theta}$ is the normalising constant, which is typically unknown. We will refer this posterior distribution as $\pi_n$ in the future discussion when \(\theta\) is assumed to be known. In practice, we are often interested in the Bayesian inferences based on the posterior distributions of the jumps defined in \eqref{eqn:Chap1-PDMP-Posterior} with known static model parameters \(\theta\). It is a more common problem to make Bayesian inference on the static parameter \(\theta\). In this case, we assign a prior \(\pi(\theta)\) to the parameters and try to find the posterior distribution of \(\theta\)
 \[
   \pi(\theta|y_{(0,t_n]}) = \int \pi(\theta)\pi_n^{\theta}(dk_n,d\tau_{1:k_n},d\phi_{0:k_n}|y_{(0,t_n]})  
 \]
 Since the integral involved in the above expression is in general intractable, we will often turn to employing Monte Carlo methods to perform such inferences. 
+\subsection{Elementary Change-point Model}
+The first example we consider is the elementary change-point model. We assume that the interjump times are distributed according to a \textit{Gamma} distribution with shape and scale parameter equal to \(\alpha\) and \(\beta\). Moreover, the interjump times are assumed to be independent of each other. Given the jump times, the corresponding jump values are assumed to follow a Gaussian AR(1)-process, i.e. \(g(\phi_n|\phi_{n-1},\tau_{n-1},\tau_n) = \mathcal{N}(\phi_n;\rho\phi_{n-1},\sigma_{\phi}^2)\), where \(\rho \in \mathbbm{R}\) and \(\sigma_{\phi}^2 \in (0,\infty)\) are the static parameters of the model. Having the jump times and values, the deterministic function of the change-point model is piecewise constant, i.e. \(F(t|\tau,\phi):= \phi\). Observations are then obtained at regular times \(k\Delta, k= 1,2,...\) and are obtained with a Gaussian noise of mean \(0\) and variance \(\sigma_y^2\). Hence, the static parameters of the model are given by \(\theta:= (\rho,\sigma_\phi^2,\sigma_y^2,\alpha,\beta) \in \mathbbm{R}\times (0,\infty)^4\). 
+
+Figure \ref{Fig:Changpoint Data} shows the artificial data we simulated from the model with \(\alpha=4,\beta=10\) and also \((\rho,\sigma_\phi^2,\sigma^2_y):= (0.9,1.0,0.5)\). Moreover, we take \(\Delta := 1\) and \(T:=1,0000\) for the simulated data.
+\begin{figure}[t!] 
+    \centering
+    \includegraphics[width=0.9\textwidth]{CP_data.pdf}
+    \caption{Simulated data of the change-point model described in this section The static parameters take value \((\rho,\sigma_\phi^2,\sigma_y^2,\alpha,\beta):=(0.9,1.0,0.5,4.0,10.0)\). Grey points are the noisy observations recorded at every \(\Delta := 1\). The red lines represent the actual PDMP}
+    \label{Fig:Changpoint Data}
+\end{figure}
+\subsection{Shot-noise Cox Model}
+Another model we considered is the \textit{Short-noise Cox} model which was introduced by Cox and Isham(1980). It plays a central role at modelling the claims arrivals in the insurance market. The \textit{Short-noice Cox} model can be treated as a generalised Poisson point process with more flexibility on the intensity, allowing it to be a stochastic process as well. Let \(\zeta_t\) be a short-noise intensity process which is unobservable. In the context of insurance claims, \(\zeta_t\) can be interpreted as follows. Catastrophic events occur at random times \(\{\tau_n\}_{n=1,2,3,...}\) resulting in a sudden jump on the intensity of claim arrivals. The corresponding jump values \(\phi_n\) would then depend on the severity of the catastrophic event causing such jump. Between \(\tau_n\) and \(\tau_{n+1}\), the intensity will gradually decay as more and more claims have been settled until the advent of the next catastrophic event. 
+
+In this numerical example, the interjump times are assumed to be exponentially distributed with rate \(\lambda_\tau\), i.e. 
+\[
+  f(\tau_n|\tau_{n-1}) = \lambda_\tau \exp(-\lambda_\tau\exp(\tau_n-\tau_{n-1}))\times \mathbbm{I}(\tau_n > \tau_{n-1})  
+\]
+Furthermore, we assume that the initial jump value, \(\phi_0\), is distributed according to an exponential distribution with rate \(\lambda_\phi\), i.e. 
+\[
+    g(\phi_0)= \lambda_\phi(-\lambda_\phi\phi_0)\mathbbm{I}(\phi_0>0)
+\]
+Moreover, given \(\tau_{n-1},\tau_n\) and the previous jump value \(\phi_{n-1}\), the conditional density of the jump value at \(\tau_n\), \(\phi_n\), will be given by
+\[
+    g(\phi_n|\phi_{n-1},\tau_{n-1},\tau_n) = \lambda_\phi \exp(-\lambda_\phi(\phi_n - \phi_{n}^{-}))\mathbbm{I}(\phi_n > \phi_n^{-})
+\]
+Here, \(\phi_n^{-}:=\phi_{n-1}\exp(-\kappa(\tau_n-\tau_{n-1}))\) represents the value of the intensity just before the jump at \(\tau_n\). Moreover, the intensity \(\zeta_t\) at any time will only depend on the jump times and jump values and is given by 
+\[
+    \zeta_t := \phi_{\nu_t}\exp(-\kappa(t-\tau_{\nu_t}))
+\]
+where \(\nu_t:= \sup \{ j \in \mathbbm{N} | \tau_j \leq t\}\). 
+
+Given the intensity process \(\zeta_t\), claims will arrive according to a Poisson process with intensity \(\zeta_t\). In the example, we set the observations to be the claim arrival times. Hence, for any time interval \((s,t]\), the likelihood of the observations in the interval will be given by 
+\[
+  p(y_{(s,t]}|\zeta_{(s,t]}) := \exp \left(-\int_{s}^{t} \zeta_s ds\right) \prod_{y \in (s,t]} \zeta_y 
+\]
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\textwidth]{SNC_Data.pdf}
+    \caption{Data simulated from the short-noise Cox model. Static parameters used are \(\theta:=(\lambda_\tau,\lambda_\phi,\kappa)= (1/40,2/3,1/100)\). Top: The intensity process \(\zeta_t\) of the Cox model. Bottom: histogram of the event times with bin width equal to 2.5.}
+    \label{Figure: SNC Data}
+\end{figure}
+
+Therefore, the static parameters in the model are \(\theta:=(\lambda_\tau,\lambda_\phi,\kappa)\). Figure \ref{Figure: SNC Data} shows an example of the intensity process and the corresponding observations simulated from the short-noise Cox model with \(\lambda_\tau = 1/40, \lambda_\phi=2/3\) and \(\kappa=1/100\). Particle filtering is then applied to infer the jump times and jump values embed in the intensity process. 
+\begin{comment}
 \section{Related Literature}
-To make inferences on the PDMP models, several particle filters have been proposed in the literature. \cite{godsill2005variable} proposed a particle filter that is based on a bootstrap approach. Such a method is termed as \textit{variable rate particle filters} (VRPF). One of the main drawbacks of VRPF is that particles are only proposed based on the information up to a certain time. As a result, later information would not be about to be used to guide the proposals of particles even if they are highly informative.  A particle filter based around the Sequential Monte Carlo (SMC) Sampler of \cite{del2006sequential} ahs been proposed later by \cite{whiteley2011monte}. This alleviate the path degeneracy problem of \cite{godsill2005variable}. However, the way \cite{whiteley2011monte} formulates the problem makes the resulting particle filter unsuitable for perform backward simulation, which is an important variance reduction step for SMC samplers. \cite{finke2014static} made modifications and reformulate the particle filter of \cite{whiteley2011monte} to make it suitable for backward simulations. A corresponding particle Gibbs sampler was also proposed to make Bayesian inferences on the static parameters of the PDMP models. However, the particle filters proposed by \cite{whiteley2011monte} and \cite{finke2014static} incur an approximation on the posterior distribution of the PDMP and this will become a problem when the PDMP is likely to jump more than once within an observing window. Numerical results in \cite{finke2014static} also shows that such an approximation may become obivious in certain models. 
+To make inferences on the PDMP models, several particle filters have been proposed in the literature. \cite{godsill2005variable} proposed a particle filter that is based on a bootstrap approach. Such a method is termed as \textit{variable rate particle filters} (VRPF). One of the main drawbacks of VRPF is that particles are only proposed based on the information up to a certain time. As a result, later information would not be about to be used to guide the proposals of particles even if they are highly informative.  A particle filter based around the Sequential Monte Carlo (SMC) Sampler of \cite{del2006sequential} ahs been proposed later by \cite{whiteley2011monte}. This alleviate the path degeneracy problem of \cite{godsill2005variable}. However, the way \cite{whiteley2011monte} formulates the problem makes the resulting particle filter unsuitable for perform backward simulation, which is an important variance reduction step for SMC samplers. \cite{finke2014static} made modifications and reformulate the particle filter of \cite{whiteley2011monte} to make it suitable for backward simulations. A corresponding particle Gibbs sampler was also proposed to make Bayesian inferences on the static parameters of the PDMP models. However, the particle filters proposed by \cite{whiteley2011monte} and \cite{finke2014static} incur an approximation on the posterior distribution of the PDMP and this will become a problem when the PDMP is likely to jump more than once within an observing window. Numerical results in \cite{finke2014static} also shows that such an approximation may become obvious in certain models. 
 
 We propose to solve the problem from a different direction. To alleviate the problems existing in \cite{godsill2005variable}, we formulate a particle filter based on the block sampling strategies of \cite{doucet2006efficient}. At each time, in addition to proposing jumps in the current interval, we also make use of the new information available to make modifications on the jumps proposed in the previous intervals. 
-
+\end{comment}
 
 
 
@@ -188,7 +236,6 @@ $$X_{1:n}^i = \left(X_{1:n-1}^{A_{n-1}^i},X_n^i\right)=\left(X_1^{B_{1|n}^i},...
 SMC method is sometimes also referred as Sequential Importance Resampling method. Since resampling will introduce extra variance to the estimation of $\pi_{n}(dx_{1:n})$ as shown by \cite{chopin2004central}, it is generally preferable to use \eqref{Standard SMC - IS target approx} to approximate $\pi_n(dx_{1:n})$ instead of using the equally weighted resampled particles. However, by inserting a resampling step, we can get rid of the particles of pretty low weights and focus our computation on regions with high probability density. 
 
 The SMC method solves the problem of weight degeneracy. However, it still suffers from path degeneracy problem. When $n$ increases, the new particles sampled will eventually share the same ancestor.
-\section{SMC filter for piecewise deterministic processes}
 \subsection{Variable rate particle filter (VRPF)}
 In this section, we describe the SMC filter for PDPs. We first introduce the particle filter named \textit{variable rate particle filter} (VRPF) proposed by \cite{godsill2005variable}. This is actually a standard SMC algorithm on PDPs with a reparameterised presentation of the PDPs.\\
 Let $0=t_0 < t_1 < t_2 <... $, where $t_n, n>0$, represents the $n$-th SMC step. Let $\left(\tau_{n,k},\phi_{n,k}\right)$ be the $k$-th jump time and its associated jump value in the time interval $(t_{n-1},t_n]$. Moreover, let $k_n \geq 0$ be the number of jumps in the interval $(t_{n-1},t_n]$. Then, we can define the 'states' to be 
@@ -386,7 +433,7 @@ When \(n \leq L\), the corresponding incremental weight will be given by
         }
     }
 \end{algorithm}
-If the resampling steps are also included in this scheme, the weights at step $n$ will then be equal to the incremental weights only. Details of the Block SMC method are given in Algorithm \ref{Block SMC}. It is also clear that the performance of the Block SMC method will depend on the choices of the artificial conditional densities \(\{\lambda_n\}\) and the proposal densities \(\{K_n\}\). To have optimal performance, these should be chosen to minimise the variance of the incremental weights defined in \eqref{eqn:BlockSMC_G2} and \eqref{eqn:BlockSMC_G1}. \cite{doucet2006efficient} derived the following two propositions that provide us guides on how to chose these densities. 
+If the resampling steps are also included in this scheme, the weights at step $n$ will then be equal to the incremental weights only. Details of the Block SMC method are given in Algorithm \ref{Block SMC}. It is also clear that the performance of the Block SMC method will depend on the choices of the artificial conditional densities \(\{\lambda_n\}\) and the proposal densities \(\{K_n\}\). To have optimal performance, these should be chosen to minimise the variance of the incremental weights defined in \eqref{eqn:BlockSMC_G2} and \eqref{eqn:BlockSMC_G1}. \cite{doucet2006efficient} derived the following two propositions that provide us guides on how to choose these densities. 
 \begin{proposition}\label{optimal lambda}
     When \(n>L\), the optimal conditional distribution \[\lambda_n(x_{n-1}(1),...,x_{n-L}(L)|x_{1:n-L}(L+1),x_{n-L+1}(L),..,x_{n-1}(2),x_n(1))\] that minimizes the variance of the incremental weight defined in \eqref{eqn:BlockSMC_G2} is given by
     \begin{equation}
@@ -583,20 +630,6 @@ When $m_{n-1} = 1$, i.e. a \textit{birth} is proposed,
     \times \frac{f\left(\mathring{\tau}_{n-1}|\hat{\tau}_{n-1,\hat{k}_{n-1}}\right)q\left(\mathring{\phi}_{n-1}|\hat{\phi}_{n-1,\hat{k}_{n-1}},\mathring{\tau}_{n},\hat{\tau}_{n-1,\hat{k}_{n-1}}\right)\lambda_{n-1}(\bar{u}_{n-1}|m_{1:n-1},\bar{x}_{1:n-1})}{\mathbbm{1}\left(\hat{\tau}_{n-1,\hat{k}_{n-1}} \vee t_{n-2}  < \mathring{\tau}_{n-1} \leq t_{n-1} \right)\alpha_{n-1,1}\left(\mathring{\tau}_{n-1}|\mathcal{J}_{n-1}\right)\beta_{n-1,1}\left(\mathring{\phi}_{n-1}|\mathcal{J}_{n-1}\right)}\\\\
     \times \frac{h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)}{K_{n,3}^1(k_n|m_{n-1}=1,u_{n-1},z_{1:n-1})K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,m_{n-1}=1,u_{n-1},z_{1:n-1}\right)}
 \end{multline}
-In Equation \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}, \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} and \eqref{BlockVRPF_SMC_Incremental Weight_Birth}, $h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$ and $K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,1,u_{n-1},z_{1:n-1}\right)$ will all become $1$ when $k_n=0$. We omit the explicit representation of these two situations here since they are actually the special cases of the above representations. 
-The BlockVRPF method is outlined in Algorithm \ref{Alg:BlockVRPF}. The sampling schemes are not specifically outlined according to each case. More specifically, $U_{n-1}^i$ in line 12 of Algorithm \ref{Alg:BlockVRPF} will become $\emptyset$ when $M_{n-1}^i = 0$ and $k_{n-1}^{A_{n-1}^i} = 0$. \textcolor{YellowGreen}
-{BlockVRPF sampler we proposed in this section provides us with an opportunity to correct the jumps in the last time block. Such a correction is more obvious when a jump appears neat the end of a block in the actual process. This is illustrated in Figure \ref{BlockSMC_correction_illustration}. One can see that there is a jump occuring near the end of the first time block in the actual PDMP and this is missed by the VRPF sampler completely. One the contrary, due to the resampling step in the BlockVRPF sampler, there is a chance to recover this missed jump (as shown in the graph). Even if the missed jump is not recovered, the last jump value will also be modified in light of the observations occurring in the next time block, making it more accurate compared to the jump value sampled in the VRPF method.}
-
-\textcolor{YellowGreen}
-{However, one may also notice that the calculation of incremental weights for the BlockVRPF sampler involve a likelihood ratio of part of the observations in the previous block conditional on the new and old jump time and values. This suggests that if a modification significantly improves the estimation of the PDMP, the corresponding incremental weight will be significantly large, making it a dominating particle. This will introduce larger variance to the incremental weights, resulting in the BlockVRPF potentially having smaller ESSs. The incremental weight also depends on the sampled jumps in the new block at each SMC step. Hence, having proposal kernels that are close approximations to the optimal ones described in Proposition \ref{Optimal proposal kernel} is also crucial to the performance of the BlockVRPF sampler. Search for optimal proposal kernels or approximations of these kernels will therefore be possible directions of future work.}
-
-\begin{figure}[htb!]
-    \centering
-    \includegraphics[width=\textwidth]{BlockVRPF_Illustration.pdf}
-    \caption{Illustration of the correcting power of BlockVRPF sampler. Black line represents the actual PDMP we are interested. Given the same sampled jumps in the first block (time blocks are splitted by the yellow dashed line), both VRPF and BlockVPRF sampler were used to sample the jumps in the second block. These sampled processes are represented by red lines (VRPF) and green lines (BlockVRPF)}
-    \label{BlockSMC_correction_illustration}
-\end{figure}
-
 \begin{algorithm}
     \caption{Block Variable Rate Particle Filter (BlockVRPF)}\label{Alg:BlockVRPF}
     \For{n=1}{
@@ -627,17 +660,64 @@ The BlockVRPF method is outlined in Algorithm \ref{Alg:BlockVRPF}. The sampling 
         }
     }
 \end{algorithm}
+In Equation \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_EmptyU}, \eqref{BlockVRPF_SMC_IncrementalWeight_Adjust_NonEmptyU} and \eqref{BlockVRPF_SMC_Incremental Weight_Birth}, $h\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|\mathring{\tau}_{n-1},\mathring{\phi}_{n-1}\right)$ and $K_{n,3}^{2}\left(\tau_{n,1:k_n},\phi_{n,1:k_n}|k_n,1,u_{n-1},z_{1:n-1}\right)$ will all become $1$ when $k_n=0$. We omit the explicit representation of these two situations here since they are actually the special cases of the above representations. 
+The BlockVRPF method is outlined in Algorithm \ref{Alg:BlockVRPF}. The sampling schemes are not specifically outlined according to each case. More specifically, $U_{n-1}^i$ in line 12 of Algorithm \ref{Alg:BlockVRPF} will become $\emptyset$ when $M_{n-1}^i = 0$ and $k_{n-1}^{A_{n-1}^i} = 0$. \textcolor{blue}
+{BlockVRPF sampler we proposed in this section provides us with an opportunity to correct the jumps in the last time block. Such a correction is more obvious when a jump appears neat the end of a block in the actual process. This is illustrated in Figure \ref{BlockSMC_correction_illustration}. One can see that there is a jump occurring near the end of the first time block in the actual PDMP and this is missed by the VRPF sampler completely. One the contrary, due to the modification step in the BlockVRPF sampler, there is a chance to recover this missed jump (as shown in the graph).}
 
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\textwidth]{BlockVRPF_Illustration.pdf}
+    \caption{Illustration of the correcting power of BlockVRPF sampler. Black line represents the actual PDMP we are interested. Given the same sampled jumps in the first block (time blocks are splitted by the yellow dashed line), both VRPF and BlockVPRF sampler were used to sample the jumps in the second block. These sampled processes are represented by red lines (VRPF) and green lines (BlockVRPF)}
+    \label{BlockSMC_correction_illustration}
+\end{figure}
+
+\subsection{Comparison between VRPF and BlockVRPF Samplers}\label{section: PF simulation}
+To compare the performances of VRPF and BlockVRPF samplers, we apply both samplers to the simulated data of the elementary change-point model shown in Figure \ref{fig: PF_Simulation_Data}, which are the first \(500\) observations shown in Figure \ref{Fig:Changpoint Data}. In addition, we deliberately discretize the time so that there are jumps near the end of each time block. The time discretisations are also shown in Figure \ref{fig: PF_Simulation_Data}. For both algorithms, the number of jumps in each time block are sampled from a Poisson distribution with mean equal to the length of the block divided by the mean interjump time. Given the number of jumps, we sample the corresponding jump times from the uniform distribution and order them. The jump values are then sampled from their full conditional distributions. For BlockVRPF algorithm, a \textit{birth} move will be proposed with probability \(1-S(\hat{\tau}_{n-1,\hat{k}_{n-1}},t_{n-1})\). Otherwise, an \textit{adjustment} will be proposed instead. For a \textit{birth} move, the new jump times will be proposed uniformly between \(\hat{\tau}_{n-1,\hat{k}_{n-1}}\) and \(t_{n-1}\). For an \textit{adjustment}, a modified jump time will be proposed from a Gaussian distribution centered at \(\hat{\tau}_{n-1,\hat{k}_{n-1}}\) with variance \(0.1^2\). Conditional on the modified jump times, the corresponding jump values are also sampled from their full conditional distributions. Resampling is also done whenever the effective sample size (ESS) drops below half the total number of particles. 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{PF_Simulation_Data.pdf}
+    \caption{Data used in the simulations discussed in section \ref{section:particle filtering simulations}. Grey dotted lines represent the time discretisations used in the simulations.}
+    \label{fig: PF_Simulation_Data}
+\end{figure}
+
+For each sampler, we run the algorithm with \(500\) particles and the true parameter values for \(1,000\) times. We also perform backward simulations at the end of each simulation to obtain one sample of the jumps conditional on the observations. From these samples, we find the last jump as well as the first jump in each time block. For each of the actual jumps, we also find the nearest sampled jump times for both VRPF and BlockVRPF method. Figure \ref{Figure: PF simulation result 1} shows the sampled jump times obtained from both methods just before and after \(t=350\), which is one of the time discretisation point. We can see that VRPF method tends to ignore the last jump point before \(t=350\) and place high weights around the previous jump time. It also fails to detect this jump at a later stage, as shown in (b) of Figure \ref{Figure: PF simulation result 1}. On the contrary, BlockVRPF successfully detect the jump near \(t=350\) and places higher weights in the region around that jump as well. Figure \ref{Figure: PF simulation result 2} shows the histograms of the nearest sampled jump times to the actual one obtained from both methods. It is clear to see from the plots that the histogram for the BlockVRPF methods is more concentrated around the actual jump time near \(t=350\). However, a non-negligible proportion of the sample from VRPF method is in a region centered at \(t=400\). This suggests that BlockVRPF are more robust to find and recover the jumps that are near the time discretisation points. On the contrary, using the VRPF method is more likely to miss these jumps or only find them at times later than the actual ones. Figure \ref{Figure: PF simulation result 3} shows the histograms of the sampled nearest jump times to the actual one near \(t=97\). It is clear that the BlockVRPF method is still robust to find the jump at the correct position. The VRPF method also manages to find the jump this time. However, it only finds it at a slightly later time than the actual one. As a result, it may bring biases to the estimation when the VRPF method is used. 
+
+For the jump times that are further away from the time discretisation points, both VRPF and BlockVRPF sampler will produce similar estimations. For presentation simplicity, we will not include all the plots here and the details of all the simulation results will be included in Appendix. The simulation results discussed in this section indicate that BlockVRPF method is more robust comparing to the VRPF method. \textcolor{blue}
+{However, one may also notice that the calculation of incremental weights for the BlockVRPF sampler involve a likelihood ratio of part of the observations in the previous block conditional on the new and old jump time and values. This suggests that if a modification significantly improves the estimation of the PDMP, the corresponding incremental weight will be significantly large, making it a dominating particle. This will introduce larger variance to the incremental weights, resulting in the BlockVRPF potentially having smaller ESSs. The incremental weight also depends on the sampled jumps in the new block at each SMC step. Hence, having proposal kernels that are close approximations to the optimal ones described in Proposition \ref{Optimal proposal kernel} is also crucial to the performance of the BlockVRPF sampler. Search for optimal proposal kernels or approximations of these kernels will therefore be possible directions of future work.}
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\textwidth]{Histogram_T350.pdf}
+    \caption{Histograms showing the sampled jump times just before and after a time discretisation point (represented by the grey dashed line). Left: last sampled jump times before the discretisation. Right: first sampled jump times after the discretisation. Results obtained from VRPF and BlockVRPF samplers are in orange and green colour respectively. Red vertical lines are the two most recent actual jump times before and after the time discretisation point.}
+    \label{Figure: PF simulation result 1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Histogram_NearestJump9.pdf}
+    \caption{Histograms of the sampled nearest jump times to the jump just before \(t=350\) obtained from both methods. Left: results obtained from VRPF sampler. Right: results obtained from BlockVRPF sampler. Red line represents the actual jump times and red start represents the time discretisation point.}
+    \label{Figure: PF simulation result 2}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Histogram_NearestJump3.pdf}
+    \caption{Histograms of the sampled nearest jump times to the jump just before \(t=97\) obtained from both methods. Left: results obtained from VRPF sampler. Right: results obtained from BlockVRPF sampler. Red line represents the actual jump times and red start represents the time discretisation point.}
+    \label{Figure: PF simulation result 3}
+\end{figure}
+
+The BlockVRPF method is also suitable to be used within the particle Gibbs sampler to make inferences on the static parameters in the PDMP models. In this next section, we are going to give an introduction to the particle Gibbs sampler and apply it with both VRPF and BlockVRPF method to obtain estimations of the posterior distributions of the static parameters for the two models considered in this work. 
 \section{Static Parameter Estimations using Particle Gibbs}
 In the previous section, we proposed a novel method that combines block sampling and VRPF to perform filtering on the piecewise deterministic Markov models, given the values of the static parameters in the model is known. In this section, we are trying to make inferences on these static parameters in the piecewise deterministic processes. 
 
 There has been many Bayesian methods based around the SMC sampler proposed by various authors to estimate the static parameters of Markov models, such as Neal (2001) and Chopin (2002). More recently, Andrieu et al. (2010) and Chopin et al. (2013) showed that SMC methods can be combined with Markov Chain Monte Carlo (MCMC) methods to make estimations on the static parameters in state-space models. 
-\subsection{Particle Markov Chain Monte Carlo (PMCMC) Methods }
-The Particle Markov Chain Monte Carlo (PMCMC) is a class of Bayesian inference methods that combines SMC with MCMC to approximately generate samples from the posterior distribution of the parameters for models whose likelihood is intractable due to the presense of latent variables. Suppose the parameter $\theta \in \Theta$ of the model of interest has a prior density $\pi(\theta)$. Given observations $y_{1:T}$, we are interested in the posterior density $\pi_P(\theta|y_{1:P}) \propto \pi(\theta)p(y_{1:P}|\theta)$. When there are latent variables present in the model, the likelihood $p(y_{1:P}|\theta)$ will be given by 
+\subsection{Particle Markov Chain Monte Carlo (PMCMC) Methods}\label{section:particle filtering simulations}
+The Particle Markov Chain Monte Carlo (PMCMC) is a class of Bayesian inference methods that combines SMC with MCMC to approximately generate samples from the posterior distribution of the parameters for models whose likelihood is intractable due to the presence of latent variables. Suppose the parameter $\theta \in \Theta$ of the model of interest has a prior density $\pi(\theta)$. Given observations $y_{1:T}$, we are interested in the posterior density $\pi_P(\theta|y_{1:P}) \propto \pi(\theta)p(y_{1:P}|\theta)$. When there are latent variables present in the model, the likelihood $p(y_{1:P}|\theta)$ will be given by
+
 \begin{equation}
     \label{PMCMC-marginal likelihood}
-    p(y_{1:P}|\theta) = \int p(x_{1:P},y_{1:P}|\theta)dx_{1:P} = \int p(x_{1:P}|\theta) p(y_{1:P}|x_{1:P},\theta) dx_{1:P}
+    p(y_{1:P}|\theta) = \int p(x_{1:P},y_{1:P}|\theta)dx_{1:P} = \int p(x_{1:P}|\theta) p(y_{1:P}|x_{1:P},\theta) dx_{1:P},
 \end{equation}
+
 which is intractable in most scenario. This prevents us from designing standard MCMC samplers targeting $p(\theta|y_{1:P})$. To alleviate this problem, one could include $x_{1:P}$ as auxiliary variables and target the extended density $\pi_P(\theta,x_{1:P}|y_{1:P})$ using a MCMC sampler. By targeting the extended density, we have an opportunity to implement a Gibbs sampler to sample from $\pi_P(\theta,x_{1:P}|y_{1:P})$ by the following scheme:
 \begin{enumerate}[label=\textit{Step \arabic*.},leftmargin=*]
     \item Sample $\theta' \sim \pi_P(\theta|x_{1:P},y_{1:P})$
@@ -646,7 +726,7 @@ which is intractable in most scenario. This prevents us from designing standard 
 Performing the sampling task in \textit{Step 1} is in general easy. If conjugate priors are used for $\theta$, one can sample exactly from the posterior density. As the unnomarlised density $\pi_P(\theta,x_{1:P},y_{1:P})$ can be evaluated point-wise, one can also replace \textit{Step 1} with a Metropolis-Hastings step when direct sampling is not possible. On the other hand, sampling from the density in \textit{Step 2} is in general intractable except for some specific scenarios such as linear Gaussian models and finite state Hidden Markov models \citep{andrieu2010particle}. Hence, practically one should replace \textit{Step 2} with a Metropolis-Hastings update. In order to ensure good performance of the MH update in \textit{Step 2}, one should normally search for a 'good' proposal distribution $q(x_{1:P})$ that is similar to $\pi_P(x_{1:P}|\theta',y_{1:P})$. As a result, a natural idea would be to use the empirical distribution obtained by running an SMC algorithm targeting $\pi_P(x_{1:P}|\theta',y_{1:P})$ with $N$ particle as the proposal distribution for the MH update. From the previous chapter, we know that the SMC algorithm produces an approximation to its target density by
 \begin{equation}
     \label{PMCMC - Approximation of Step 2 Distribution}
-    \hat{\pi}_P(dx_{1:P}|\theta',y_{1:P}):=\sum_{n=1}^{N} W_P^n \delta_{x_{1:P}^n}(dx_{1:P})
+    \hat{\pi}_P(dx_{1:P}|\theta',y_{1:P}):=\sum_{n=1}^{N} W_P^n \delta_{x_{1:P}^n}(dx_{1:P}),
 \end{equation}
 This gives us a way of designing a proposal distribution that is in fact an approximation of the actual density $\pi_P(x_{1:P}|\theta',y_{1:P})$. In fact, one can use the approximation defined in \eqref{PMCMC - Approximation of Step 2 Distribution} as the proposal distribution and this is the key idea behind the PMCMC methods. Sampling from $\hat{\pi}_P(dx_{1:P}|\theta',y_{1:P})$ is simple as one only needs the outputs from a single run of the corresponding SMC algorithm. However, the calculation of acceptance probability of the MH update requires one to compute the proposal density $q(dx_{1:P})$ that is in this case given by 
 \begin{equation}
@@ -666,7 +746,7 @@ with $B_P^k = k$ and $B_n^k = A_{n}^{B_{n+1}^k}$. To sample a single path from t
     \item The target distribution should still admit $\pi_P(\theta,x_{1:P}|y_{1:P})$ as a marginal.
     \item The target distribution should be as close as possible to the proposal distribution in a certain sense.
 \end{enumerate}
-The first condition needs to be fullfilled to ensure that we are still able to target the correct distribution as a marginal. We try to achieve the second condition in order to make sure that the MH update targeting this extended distribution is as efficient as possible. Inspired by this, we should consider factorising the extended target density in the form
+The first condition needs to be fulfilled to ensure that we are still able to target the correct distribution as a marginal. We try to achieve the second condition in order to make sure that the MH update targeting this extended distribution is as efficient as possible. Inspired by this, we should consider factorising the extended target density in the form
 \begin{equation}
     \label{PMCMC-Form of extended target}
     \tilde{\pi}_P(\theta,b_{1:P},\mathbf{x}_{1:P},\mathbf{a}_{1:P-1}) = \frac{\pi_{P}(\theta,x_{1:P}^{b_{1:P}},b_{1:P})}{N^P}\psi_P^{N,\theta}(\mathbf{x}_{1:P}^{-b_{1:P}},\mathbf{a}_{1:P-1}^{-b_{2:P}}|\theta,x_{1:P}^{b_{1:P}},b_{1:P})
@@ -887,56 +967,10 @@ We can now see that the rejuvenation step is crucial to ensure the validity of t
 \end{algorithm}
 
 Although the rejuvenation step has the potential to improve mixing, the actual effect will heavily depend on the choice of the backward kernels \(\{\mu_n\}\) and \(\{\lambda_n\}\) appearing in the target distribution. Ideally, we want to sample \(\{\bar{u}_j\}\) that are not far from the modifications \(\{u_j\}\) to make sure that the incremental weights after rejuvenation is not too large. In the numerical studies of this chapter, we propose to use a Gaussian kernel centered at the modified jump times and values with a small variance. However, using Gaussian kernels creates a new problem - if the variance is set to be too small, a large change in the last jump proposed by \(u_j\) (which often indicates a correction to a wrong jump value/time) would have tiny or even 0 weight. Hence, one should carefully design the backward kernels to ensure that the rejuvenation steps indeed bring improvements on the mixings. 
-\section{Numerical Examples}
-In this section, we are going to apply the particle Gibbs sampler with both VRPF and BlockVRPF method to perform Bayesian inferences on two challenging examples in the literature - the \textit{Elementary Change-point Model} and the \textit{Short-noise Cox Model}. The section will proceed as follows. We will first give introductions to the aforementioned models. The general setups of the particle Gibbs sampler is then given followed by the simulation results of the particle Gibbs sampler with both SMC schemes. 
-\subsection{Elementary Change-point Model}
-The first example we considered is the elementary change-point model. We assumed that the interjump times are distributed according to a \textit{Gamma} distribution with shape and scale parameter equal to \(\alpha\) and \(\beta\). Moreover, the interjump times are assumed to be independent to each other. Given the jump times, the corresponding jump values are assumed to follow a Gaussian AR(1)-process, i.e. \(g(\phi_n|\phi_{n-1},\tau_{n-1},\tau_n) = \mathcal{N}(\rho\phi_{n-1};\sigma_{\phi}^2)\), where \(\rho \in \mathbbm{R}\) and \(\sigma_{\phi}^2 \in (0,\infty)\) are static parameters of the model. Having the jump times and values, the deterministic function of the change-point model is piecewise constant, i.e. \(F(t|\tau,\phi):= \phi\). Observations are then obtained at regular times \(k\Delta_t, k= 1,2,...\) and are obtained with a Gaussian noise of mean \(0\) and variance \(\sigma_y^2\). 
-
-The artificial data we considered here are simulated from such a change-point model with \(\alpha=4,\beta=10\) and also \((\rho,\sigma_\phi^2,\sigma^2_y):= (0.9,1.0,0.5)\). Moreover, we take \(\Delta_t := 1\) and \(T:=1,0000\) for the simulated data. Figure \ref{Fig:Changpoint Data} shows the simulated data of the change-point model. One also notes that the static parameter of the model is then given by \(\theta:= (\rho,\sigma_\phi^2,\sigma_y^2,\alpha,\beta)\)
-\begin{figure}[t!]
-    \centering
-    \includegraphics[width=0.9\textwidth]{CP_data.pdf}
-    \caption{Simulated data of the change-point model described in this section The static parameters take value \((\rho,\sigma_\phi^2,\sigma_y^2,\alpha,\beta):=(0.9,1.0,0.5,4.0,10.0)\). Grey points are the noisy observations recorded at every \(\Delta_t := 1\). The red lines represent the actual PDMP}
-    \label{Fig:Changpoint Data}
-\end{figure}
-\subsection{Short-noise Cox Model}
-\subsubsection{The Model}
-Another model we considered is the \textit{Short-noise Cox} model which was introduced by Cox and Isham(1980). It plays a central role at modelling the claims arrivals in the insurance market. The \textit{Short-noice Cox} model can be treated as a generalised Poisson point process with more flexibility on the intensity, allowing it to be a stochastic process as well. Let \(\zeta_t\) be a short-noise intensity process which is unobservable. In the context of insurance claims, \(\zeta_t\) can be interpreted as follows. Catastrophic events occur at random times \(\{\tau_n\}_{n=1,2,3,...}\) resulting in a sudden jump on the intensity of claim arrivals. The corresponding jump values \(\phi_n\) would then depend on the severity of the catastrophic event causing such jump. Between \(\tau_n\) and \(\tau_{n+1}\), the intensity will gradually decay as more and more claims have been settled until the advent of the next catastrophic event. 
-
-In this numerical example, the interjump times are assumed to be exponentially distributed with rate \(\lambda_\tau\), i.e. 
-\[
-  f(\tau_n|\tau_{n-1}) = \lambda_\tau \exp(-\lambda_\tau\exp(\tau_n-\tau_{n-1}))\times \mathbbm{I}(\tau_n > \tau_{n-1})  
-\]
-Furthermore, we assume that the initial jump value, \(\phi_0\), is distributed according to an exponential distribution with rate \(\lambda_\phi\), i.e. 
-\[
-    g(\phi_0)= \lambda_\phi(-\lambda_\phi\phi_0)\mathbbm{I}(\phi_0>0)
-\]
-Moreover, given \(\tau_{n-1},\tau_n\) and the previous jump value \(\phi_{n-1}\), the conditional density of the jump value at \(\tau_n\), \(\phi_n\), will be given by
-\[
-    g(\phi_n|\phi_{n-1},\tau_{n-1},\tau_n) = \lambda_\phi \exp(-\lambda_\phi(\phi_n - \phi_{n}^{-}))\mathbbm{I}(\phi_n > \phi_n^{-})
-\]
-Here, \(\phi_n^{-}:=\phi_{n-1}\exp(-\kappa(\tau_n-\tau_{n-1}))\) represents the value of the intensity just before the jump at \(\tau_n\). Moreover, the intensity \(\zeta_t\) at any time will only depend on the jump times and jump values and is given by 
-\[
-    \zeta_t := \phi_{\nu_t}\exp(-\kappa(t-\tau_{\nu_t}))
-\]
-where \(\nu_t:= \sup \{ j \in \mathbbm{N} | \tau_j \leq t\}\). 
-
-Given the intensity process \(\zeta_t\), claims will arrive according to a Poisson process with intensity \(\zeta_t\). In the example, we set the observations to be the claim arrival times. Hence, for any time interval \((s,t]\), the likelihood of the observations in the interval will be given by 
-\[
-  p(y_{(s,t]}|\zeta_{(s,t]}) := \exp \left(-\int_{s}^{t} \zeta_s ds\right) \prod_{y \in (s,t]} \zeta_y 
-\]
-\begin{figure}[htb!]
-    \centering
-    \includegraphics[width=\textwidth]{SNC_Data.pdf}
-    \caption{Data simulated from the short-noise Cox model. Static parameters used are \(\theta:=(\lambda_\tau,\lambda_\phi,\kappa)= (1/40,2/3,1/100)\). Top: The intensity process \(\zeta_t\) of the Cox model. Bottom: histogram of the event times with bin width equal to 2.5.}
-    \label{Figure: SNC Data}
-\end{figure}
-
-Figure \ref{Figure: SNC Data} shows an example of the intensity process and the corresponding observations simulated from the short-noise Cox model with \(\lambda_\tau = 1/40, \lambda_\phi=2/3\) and \(\kappa=1/100\). Particle filtering is then applied to infer the jump times and jump values embed in the intensity process. Moreover, in this mode, the static parameters we are interested are \(\theta := (\lambda_\tau,\lambda_\phi,\kappa)\). 
-\subsubsection{The Simulation}
-For the short-noise Cox model, we split the time horizon into 10 equal intervals, hence each time interval has a length of \(100\). For the particle filter, we use the same proposals to sample jump times as we did for the change-point model. Given the sampled jump times, the corresponding jump values are also sampled from their full conditional distributions. A closed form of these conditional distributions will be derived in the appendix. The modifications required in BlockVRPF method, we followed the change-point model to propose the type of modifications as well as the corresponding jump time and values. To avoid resampling \textit{births} during rejuvenation, the backward kernel \(\mu_n\) will be set to be \textit{Bernoulli}(0.1). When \(m_n = 0\), the corresponding backward kernel for the jump times and values will be Gaussian kernels centered at the modified jump time and value with standard deviation equal to \(2\) and \(1\) respectively. For both particle Gibbs with VRPF and BlockVRPF method, Gibbs sweep, a new parameter set will be obtained by running a random-walk Metropolis-Hastings algorithm with \(500\) iterations with preconditioned covariance obtained by a pilot run of the particle Gibbs. The particle Gibbs sampler was run for \(60,000\) iterations with the first \(10,000\) iterations discarded as burnins. For the parameters \(\theta:=(\lambda_\tau,\lambda_\phi,\kappa)\), we assign Gaussian priors with zero mean and covariance \textit{Diag}\((10,10^2,10)\), truncated in the region \((0,\infty)^3\). 
-\subsubsection{The Results}
-We ran both VRPF-PG and BlockVRPF-PG samplers with 10, 50 and 100 particles. Figure \ref{Figure:SNC_Sim_Posterior} shows the estimated marginal posterior distributions obained from both algorithms. One can see that the BlockVRPF-PG could produce comparable estimations of these posterior distributions even when only 10 particles are used. One should note that although different ways of discretising the time horizon may result in different mixing speeds of the PGS, the BlockVRPF-PG sampler will always yield unbiased estimations. This can be viewed as an advantage of BlockVRPF-PG sampler comparing to the algorithm proposed by \cite{finke2014static}, for which discretisations do affect the estimation results. This is due to the fact that the algorithm proposed in \cite{finke2014static} in fact yields an approxiamtion of the actual posterior distributions and accuracy of such approximation depends on the time discretisations. This was also shown in the simulation results on the same model presented in \cite{finke2014static}. For BlockVRPF-PG sampler, on the contrary, one can choose any way to discretise the time horizon without worrying about the estimation accuracies. Hence, choosing hyperparameters for BlockVRPF-PG sampler is easier. 
+\subsection{Numerical Examples}
+In this section, we are going to apply the particle Gibbs sampler with both VRPF and BlockVRPF method to perform Bayesian inferences on two challenging examples discussed in section \ref{section: intro to PDMP}  - the \textit{Elementary Change-point Model} and the \textit{Short-noise Cox Model}.  We follow what we have done in section \ref{section: PF simulation} to perform the SMC and cSMC algorithms. In addition, we split the time horizon into \(10\) equal intervals when performing the (c)SMC algorithm. Moreover, we apply the random-walk Metropolis-Hastings algorithm with \(500\) iterations to obtain new parameter sets at every Gibbs sweep. The proposal covariance matrices used in the random-walk MH algorithm are obtained through pilot runs of the particle Gibbs sampler. For both models, we run the particle Gibbs for \(60,000\) iterations with the first \(10,000\) iterations discarded as burnins. 
+\subsubsection{Shot-noise Cox Model}
+In this section, we represent the simulation results for the shot-noise Cox model. To avoid resampling \textit{births} during rejuvenation, the backward kernel \(\mu_n\) will be set to be \textit{Bernoulli}(0.1). When \(m_n = 0\), the corresponding backward kernel for the jump times and values will be Gaussian kernels centered at the modified jump time and value with standard deviation equal to \(2\) and \(1\) respectively. For the parameters \(\theta:=(\lambda_\tau,\lambda_\phi,\kappa)\), we assign Gaussian priors with zero mean and covariance \textit{Diag}\((10,10^2,10)\), truncated in the region \((0,\infty)^3\). We ran both VRPF-PG and BlockVRPF-PG samplers with 10, 50 and 100 particles. Figure \ref{Figure:SNC_Sim_Posterior} shows the estimated marginal posterior distributions obtained from both algorithms. One can see that the BlockVRPF-PG could produce comparable estimations of these posterior distributions even when only 10 particles are used. One should note that although different ways of discretising the time horizon may result in different mixing speeds of the PGS, the BlockVRPF-PG sampler will always yield unbiased estimations. This can be viewed as an advantage of BlockVRPF-PG sampler comparing to the algorithm proposed by \cite{finke2014static}, for which discretisations do affect the estimation results. This is due to the fact that the algorithm proposed in \cite{finke2014static} in fact yields an approximation of the actual posterior distributions and accuracy of such approximation depends on the time discretisations. This was also shown in the simulation results on the same model presented in \cite{finke2014static}. For BlockVRPF-PG sampler, on the contrary, one can choose any way to discretise the time horizon without worrying about the estimation accuracies. Hence, choosing hyperparameters for BlockVRPF-PG sampler is easier. 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=\textwidth]{SNC_Sim_posterior.pdf}
@@ -944,16 +978,34 @@ We ran both VRPF-PG and BlockVRPF-PG samplers with 10, 50 and 100 particles. Fig
     \label{Figure:SNC_Sim_Posterior}
 \end{figure}
 
-Figure\ref{Figure: SNC-ACF} shows the autocorrelations of the two algorithms. One can see that using the same number of particles, VRPF-PG has smaller autocorrelations comparing to BlockVRPF-PG sampler. This is possibly due to the suboptimal choice of backward kernels in the BlockVRPF sampler, as discussed in section \ref{Section:Rejuvenation}. The choice of backward kernel variances may make the incremental weights even larger after rejuvenation. Consequently, the sampled PDMPs may become more correlated, resulting in higher correlations as shown in the figure. This suggests that one may need to choose the backward kernels carefully to yield optimal performance. 
+Figure \ref{Figure: SNC-ACF} shows the autocorrelations of the two algorithms. One can see that using the same number of particles, VRPF-PG has smaller auto correlations comparing to BlockVRPF-PG sampler. This is possibly due to the suboptimal choice of backward kernels in the BlockVRPF sampler, as discussed in section \ref{Section:Rejuvenation}. The choice of backward kernel variances may make the incremental weights even larger after rejuvenation. Consequently, the sampled PDMPs may become more correlated, resulting in higher correlations as shown in the figure. This suggests that one may need to choose the backward kernels carefully to yield optimal performance. 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=\textwidth]{SNC_ACF.pdf}
     \caption{Autocorrelations obtained from both algorithms. Results obtained from VRPF-PG and BlockVRPF-PG samplers are in red and green colour respectively. Dot, dashed and solid lines represent the results obtained by using 10, 50 and 100 particles.}
     \label{Figure: SNC-ACF}
 \end{figure}
-
+\subsubsection{Elementary Change-point Model}
+In this section, we represent the simulation results for the elementary change-point model. We use the same form of backward kernels as we did in the shot-noise Cox model. However, the standard deviations for the modified jump time and value are set to be \(0.1\) and \(0.05\) respectively. Moreover, the parameters \(\theta:=(\rho,\sigma_\phi,\sigma_y,\alpha,\beta)\) are assigned to have Gaussian priors with zero mean and covariance Diag\((10^2,10^2,10,10^3,10^2)\), truncated in the region \(\mathbbm{R}\times(0,\infty)^4\).
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\textwidth]{PG-simulation-CPRes1.pdf}
+    \caption{Kernel density estimators of the posterior distributions of parameters in elementary change-point model. The results obtained by using VRPF and BlockVRPF method are represented in red and green colour respectively. Results obtained by using 25, 50 and 100 particles are represented in dot, dashed and solid lines respectively.}
+    \label{Figure: PG-Simulation-CPRes1}
+\end{figure}
+Figure \ref{Figure: PG-Simulation-CPRes1} shows the posterior estimations of the parameters obtained by using both VRPF-PG and BlockVRPF-PG algorithms. One can see that both algorithms yield comparable estimations, regardless the number of particles used in the SMC algorithm. We notice that BlockVRPF-PG produces results that are more concentrated  at the mode for parameter \(\beta\) and this becomes more obvious when less number of particles are used. This is potentially due to the extra variance introduced to the BlockVRPF method because of the modification move at each SMC step, which results in the sampled PDMP becoming more likely to get stuck at local modes if the backward kernels are badly chosen. In fact, the choices of backward kernels are crucial to the performance of BlockVRPF-PG sampler. We also run the BlockVRPF-PG with 25 particles and different values for the standard deviations of the backward Gaussian kernels for the modified jump time and value (0.1 and 0.05). Figure \ref{Figure: PG-Simulation-CPRes2} shows the autocorrelations obtained from the two runs. One can see that by only changing the standard deviation used in the backward kernel will result in significantly different performances of the BlockVRPF-PG sampler. Hence, one should try to find or approximate the optimal choices of the backward kernels to achieve the best performance for the BlockVRPF sampler and searching for such optimal kernels is potentially a direction of future work as well. 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{PG-simulation-CPRes2.pdf}
+    \caption{Autocorrelations obtained by running BlockVRPF-PG with 25 particles and different choices of backward kernels. Grey lines represent the results obtained using standard deviations 0.1 and 0.05 while green lines represent results obtained using standard deviations 0.1 and 0.2.}
+    \label{Figure: PG-Simulation-CPRes2}
+\end{figure}
+\section{Conclusion}
 \newpage
 \bibliographystyle{icml2020}
 \bibliography{reference}
+\newpage
+\appendix
+\section{Additional simulation results of section \ref{section: PF simulation}}
+In this appendix, we show the sampled nearest jump times to each of the actual jumps in the data. 
 \end{document}
-,mnb
